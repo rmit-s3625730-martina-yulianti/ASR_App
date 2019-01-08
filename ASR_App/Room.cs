@@ -6,15 +6,16 @@ namespace ASR_App
 {
     class Room
     {
-        public Schedule[] Schedules = new Schedule[6];
+        public const int ROOMSLOTS = 2;    // Maximum slots for each room
+        public Schedule[] Schedules = new Schedule[ROOMSLOTS]; 
         public string RoomName { get; }
-        public int RoomSlots { get; set; }  // maximum = 2
+        public int RoomSlots { get; set; }  
 
         // Constrator
         public Room(string roomName)
         {
             RoomName = roomName;
-            RoomSlots = 0;
+            RoomSlots = ROOMSLOTS;
 
             for (int i = 0; i < Schedules.Length; i++)
             {
@@ -25,9 +26,9 @@ namespace ASR_App
         // Add counter to RoomSlots
         public void RoomsCounter()
         {
-            if (RoomSlots < 2)
+            if (RoomSlots > 0 && RoomSlots <=2)
             {
-                RoomSlots++;
+                RoomSlots--;
             }
             else
             {

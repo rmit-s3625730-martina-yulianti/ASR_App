@@ -5,9 +5,10 @@ using System.Text;
 namespace ASR_App
 {
     /* Main Program of Appointment Scheduling Reservation Application */
-
+    
     class ASR_App
     {
+        
         List<Room> Rooms = new List<Room>();
         List<User> Users = new List<User>(); 
 
@@ -172,27 +173,28 @@ namespace ASR_App
                             break;
                         case 2:
                             // List all room availabilities
+                            int found = 0;
                             Console.WriteLine("--- Room Availability ---");
                             var date = Util.Console.Ask("Enter date for room availability (dd-mm-yyyy): ");
 
-                            Console.WriteLine($"\nRooms available on {date}:");
-                            Console.WriteLine("\tRoom name");
+                            Console.WriteLine($"\nRooms available on {date}:\n");
+                            Console.WriteLine("\tRoom name \t Availability (slots)");
                             foreach(Room room in Rooms)
                             {
                                 // First check the RoomSlots (max = 2)
-                                if (room.RoomSlots < 2) 
+                                if (room.RoomSlots > 0 && room.RoomSlots <=2) 
                                 {
                                     // Check the date
                                     foreach(Schedule roomDate in room.Schedules)
                                     {
                                         // the room still empty
-                                        if (roomDate.Date.Equals("-"))
+                                        if (roomDate.Date.Equals("-") || roomDate.Date.Equals(date))
                                         {
-                                            Console.WriteLine($"\t{room.RoomName}");
+                                            Console.WriteLine($"\t{room.RoomName} \t\t\t {room.RoomSlots}");
+                                            found++;
                                             break;
-                                        }
-                                        else
-                                        {
+                                        }else
+                                        {   
                                             continue;
                                         }
                                     }
@@ -200,10 +202,10 @@ namespace ASR_App
                                 }
                                 else
                                 {
-                                    Console.WriteLine("No room available now.");
+                                    continue;
                                 }
                             }
-
+                            Console.WriteLine((found == 0) ? "No room available." : "-----------------------------------------------");
                             StaffMenu(); // back to staff menu option
                             break;
 
