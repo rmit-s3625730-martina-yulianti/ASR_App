@@ -23,16 +23,52 @@ namespace ASR_App
             }
         }
 
-        // Add counter to RoomSlots
-        public void RoomsCounter()
+        // Delete schedule and decrease counter to RoomSlots when staff schedule created
+        public void DeleteSchedule()
         {
             if (RoomSlots > 0 && RoomSlots <=2)
             {
-                RoomSlots--;
+                RoomSlots++;
             }
             else
             {
                 throw new SlotException("Unable to create slot.");
+            }
+        }
+
+        // Add schedule and increase counter to RoomSlots when staff schedule created
+        public void AddSchedule(string date, string startTime)
+        {
+            if (RoomSlots >= 0 && RoomSlots < ROOMSLOTS)
+            {
+                for(int i = 0; i < Schedules.Length; i++)
+                {
+                    // Check if the schedule already exist in the Schecules
+                    if (Schedules[i].Date.Equals(date) && Schedules[i].StartTime.Equals(startTime))
+                    {
+                        throw new SlotException("Slot already exist. Choose other date or time");
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                // Cut the hour from startTime, and convert to int
+                string hourStr = startTime.Substring(0, 2);
+                // Add one hour from EndTime (1 hour consultation) 
+                int EndInt = int.Parse(hourStr) + 1;
+
+                // Add new schedule to the room
+                Schedules[RoomSlots].Date = date;
+                Schedules[RoomSlots].StartTime = startTime;
+                var endTime = (EndInt < 10) ? "0" + EndInt : EndInt.ToString();
+                Schedules[RoomSlots].EndTime = endTime + ":00";
+                RoomSlots--;
+
+            }
+            else 
+            {
+                throw new SlotException("Maximum 2 slots only.");
             }
         }
     }

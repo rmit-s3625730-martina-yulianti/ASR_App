@@ -10,7 +10,8 @@ namespace ASR_App
     {
         
         List<Room> Rooms = new List<Room>();
-        List<User> Users = new List<User>(); 
+        List<User> Users = new List<User>();
+        List<Slot> Slots = new List<Slot>();
 
         // Constractor
         public ASR_App()
@@ -31,6 +32,7 @@ namespace ASR_App
 
 
             // Initiate Slots from ASPdb 
+
 
         }
 
@@ -179,6 +181,8 @@ namespace ASR_App
 
                             Console.WriteLine($"\nRooms available on {date}:\n");
                             Console.WriteLine("\tRoom name \t Availability (slots)");
+                            
+                           
                             foreach(Room room in Rooms)
                             {
                                 // First check the RoomSlots (max = 2)
@@ -198,19 +202,57 @@ namespace ASR_App
                                             continue;
                                         }
                                     }
-                                    
                                 }
                                 else
                                 {
                                     continue;
                                 }
                             }
+                             
+
                             Console.WriteLine((found == 0) ? "No room available." : "-----------------------------------------------");
                             StaffMenu(); // back to staff menu option
                             break;
 
                         case 3:
                             // create slot
+                            Console.WriteLine("\n--- Create slot ---\n");
+                            var slotRoom = Util.Console.Ask("Enter room name: ");
+                            var slotDate = Util.Console.Ask("Enter date for slot (dd-mm-yyyy): ");
+                            var slotTime = Util.Console.Ask("Enter time for slot (hh:mm): ");
+                            var staffID = Util.Console.Ask("Enter staff ID: ");
+
+                            // Check whether staff ID valid
+                            foreach(User user in Users)
+                            {
+                                if( staffID.StartsWith("e") && user.UserID.Equals(staffID))
+                                {
+                                    // Check whether staff still can create slot
+                                    try {
+                                        // Check whether the room is available
+                                        foreach (Room room in Rooms)
+                                        {
+                                            if (room.RoomName.Equals(slotRoom) && room.RoomSlots < 2)
+                                            {
+                                                
+                                                ((Staff)user).AddSlot();
+                                                room.AddSchedule(slotDate,slotTime);
+                                                Slots.Add(new Slot(staffID, room));
+                                                Console.WriteLine("Slot created successfully");
+                                                break;
+                                            }
+                                            else { continue; }
+                                        }
+                                    }
+                                    catch (SlotException err)
+                                    {
+                                        Console.WriteLine(err.Message);
+                                    }
+
+                                }
+                                StaffMenu();
+                            } 
+
                             break;
 
                         case 4:
@@ -248,5 +290,7 @@ namespace ASR_App
         {
             Console.WriteLine("Show student's menu"); // dummy function
         }
+
+     
     }
 }
