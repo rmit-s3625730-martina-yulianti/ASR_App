@@ -7,8 +7,8 @@ namespace ASR_App
     class Room
     {
         public Schedule[] Schedules = new Schedule[6];
-        public string RoomName { get; set; }
-        public int RoomSlots { get; set; }
+        public string RoomName { get; }
+        public int RoomSlots { get; set; }  // maximum = 2
 
         // Constrator
         public Room(string roomName)

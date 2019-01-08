@@ -9,15 +9,27 @@ namespace ASR_App
     class ASR_App
     {
         List<Room> Rooms = new List<Room>();
+        List<User> Users = new List<User>(); 
 
         // Constractor
         public ASR_App()
         {
-            // initiate the rooms in the ASR App
+            // Initiate the rooms in the ASR App
+            // Later this should be read from the ASRdb (table Room)
             Rooms.Add(new Room("A"));
             Rooms.Add(new Room("B"));
             Rooms.Add(new Room("C"));
             Rooms.Add(new Room("D"));
+
+            // Initiate Users from ASPdb
+            // dummy
+            Users.Add(new Student("s1234567", "John Doe", "s1234567.student.rmit.edu.au"));
+            Users.Add(new Student("s2345678", "Jimmy Kim", "s2345678.student.rmit.edu.au"));
+            Users.Add(new Staff("e12345", "William Smiths", "e12345.rmit.edu.au"));
+            Users.Add(new Staff("e23456", "Annie Lim", "e23456.rmit.edu.au"));
+
+
+            // Initiate Slots from ASPdb 
 
         }
 
@@ -54,9 +66,9 @@ namespace ASR_App
                     Console.WriteLine("    4. Student menu");
                     Console.WriteLine("    5. Exit");
                     Console.WriteLine("-----------------------------");
-                    int option = Util.Console.AskInt("Enter option: ");
+                    int mainOpt = Util.Console.AskInt("Enter option: ");
 
-                    switch (option)
+                    switch (mainOpt)
                     {
                         case 1:
                             ListRooms();
@@ -121,7 +133,112 @@ namespace ASR_App
         // Display menu for staff
         private void StaffMenu()
         {
-            Console.WriteLine("Show staff's menu"); // dummy function
+            bool staffMenu = true;
+
+            while (staffMenu)
+            {
+                try
+                {
+                    Console.WriteLine("Entering staff menu");
+                    Console.WriteLine("\n---------------------------------------");
+                    Console.WriteLine("Staff menu:");
+                    Console.WriteLine("\t 1. List staff");
+                    Console.WriteLine("\t 2. Room availability");
+                    Console.WriteLine("\t 3. Create slot");
+                    Console.WriteLine("\t 4. Remove slot");
+                    Console.WriteLine("\t 5. Exit");
+                    Console.WriteLine("-----------------------------");
+                    int staffOpt = Util.Console.AskInt("Enter option: ");
+
+                    switch (staffOpt)
+                    {
+                        case 1:
+                            // List all staffs
+                            Console.WriteLine("--- List Staffs ---");
+                            Console.WriteLine("    IDName \t\t Name                      "+$"\t Email");
+                            foreach (User user in Users)
+                            {
+                                if (user.UserID.StartsWith("e"))
+                                {
+                                    Console.WriteLine(user.ToString());
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            Console.WriteLine("----------------------------------------------------------------------------");
+                            StaffMenu(); // back to staff menu option
+                            break;
+                        case 2:
+                            // List all room availabilities
+                            Console.WriteLine("--- Room Availability ---");
+                            var date = Util.Console.Ask("Enter date for room availability (dd-mm-yyyy): ");
+
+                            Console.WriteLine($"\nRooms available on {date}:");
+                            Console.WriteLine("\tRoom name");
+                            foreach(Room room in Rooms)
+                            {
+                                // First check the RoomSlots (max = 2)
+                                if (room.RoomSlots < 2) 
+                                {
+                                    // Check the date
+                                    foreach(Schedule roomDate in room.Schedules)
+                                    {
+                                        // the room still empty
+                                        if (roomDate.Date.Equals("-"))
+                                        {
+                                            Console.WriteLine($"\t{room.RoomName}");
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    Console.WriteLine("No room available now.");
+                                }
+                            }
+
+                            StaffMenu(); // back to staff menu option
+                            break;
+
+                        case 3:
+                            // create slot
+                            break;
+
+                        case 4:
+                            // remove slot
+                            break;
+
+                        case 5:
+                            Console.WriteLine("Exit staff menu ..."); // back to main menu
+                            MainMenu();
+                            break;
+                        default:
+                            Console.WriteLine("Choose between 1 - 5, try again");
+                            break;
+
+                    }
+
+                }
+                catch(FormatException err)
+                {
+                    Console.WriteLine(err.Message);
+                    StaffMenu();
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Application error");
+                }
+
+                staffMenu = false;
+            }
+
         }
 
         // Display menu for student
