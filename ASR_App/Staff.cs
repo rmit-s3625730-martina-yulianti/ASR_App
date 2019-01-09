@@ -8,7 +8,6 @@ namespace ASR_App
     {
         const int MAXSLOTS = 4;
         public int SlotCounter { get; set; } = 0;
-        public Staff() : base() { }
         public Staff(string id, string name, string email) : base(id, name, email) { }
 
         // Add counter everytime staff creates new slot

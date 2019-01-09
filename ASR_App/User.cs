@@ -12,12 +12,6 @@ namespace ASR_App
         public string Name { get; set; }
         public string Email { get; set; }
 
-        // default constractor
-        public User()
-        {
-
-        }
-
         // overload constractor
         public User(string id, string name, string email)
         {
@@ -28,7 +22,7 @@ namespace ASR_App
 
         public override string ToString()
         {
-            return ($"    {UserID.ToString()} \t\t {Name.ToString()}               "+$"\t {Email.ToString()}");
+            return ($"    {UserID} \t\t {Name}               "+$"\t {Email}");
         }
     }
 }

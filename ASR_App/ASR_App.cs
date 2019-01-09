@@ -130,7 +130,22 @@ namespace ASR_App
         // List the slots that available in the system
         private void ListSlots()
         {
-            Console.WriteLine("Show slots availabilitis"); // dummy function
+            Console.WriteLine("--- List Slots ---");
+            var query = Util.Console.Ask("Enter date for slots (dd-mm-yyyy) ");
+            Console.WriteLine($"\nSlots on {query}");
+            Console.WriteLine("    Room name \t Start time \t End time \t Staff ID \t Bookings");
+            foreach(Slot slot in Slots)
+            {
+                if (slot.SlotDate.Equals(query))
+                {
+                    Console.WriteLine(slot.ToString());
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            Console.WriteLine("--------------------------------------------------------------------------------");
         }
 
         // Display menu for staff
@@ -140,9 +155,9 @@ namespace ASR_App
 
             while (staffMenu)
             {
-                try
-                {
-                    Console.WriteLine("Entering staff menu");
+                //try
+                //{
+                    Console.WriteLine("\nEntering staff menu");
                     Console.WriteLine("\n---------------------------------------");
                     Console.WriteLine("Staff menu:");
                     Console.WriteLine("\t 1. List staff");
@@ -209,7 +224,6 @@ namespace ASR_App
                                 }
                             }
                              
-
                             Console.WriteLine((found == 0) ? "No room available." : "-----------------------------------------------");
                             StaffMenu(); // back to staff menu option
                             break;
@@ -225,20 +239,21 @@ namespace ASR_App
                             // Check whether staff ID valid
                             foreach(User user in Users)
                             {
-                                if( staffID.StartsWith("e") && user.UserID.Equals(staffID))
+                                if (user.UserID.Equals(staffID) && staffID.StartsWith("e"))
                                 {
                                     // Check whether staff still can create slot
-                                    try {
+                                    try
+                                    {
                                         // Check whether the room is available
                                         foreach (Room room in Rooms)
                                         {
-                                            if (room.RoomName.Equals(slotRoom) && room.RoomSlots < 2)
+                                            if (room.RoomName.Equals(slotRoom) && room.RoomAvailability())
                                             {
-                                                
+                                                // If all valid, add schedule in room and slot
                                                 ((Staff)user).AddSlot();
-                                                room.AddSchedule(slotDate,slotTime);
-                                                Slots.Add(new Slot(staffID, room));
-                                                Console.WriteLine("Slot created successfully");
+                                                room.AddSchedule(slotDate, slotTime); // fix this later
+                                                Slots.Add(new Slot(staffID,slotRoom,slotDate,slotTime));
+                                                Console.WriteLine("\nSlot created successfully!");
                                                 break;
                                             }
                                             else { continue; }
@@ -250,9 +265,10 @@ namespace ASR_App
                                     }
 
                                 }
-                                StaffMenu();
-                            } 
-
+                                else { continue; }
+                               
+                            }
+                            StaffMenu();
                             break;
 
                         case 4:
@@ -269,16 +285,16 @@ namespace ASR_App
 
                     }
 
-                }
-                catch(FormatException err)
-                {
-                    Console.WriteLine(err.Message);
-                    StaffMenu();
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("Application error");
-                }
+                //}
+                //catch(FormatException err)
+                //{
+                //    Console.WriteLine(err.Message);
+                //    StaffMenu();
+                //}
+                //catch (Exception)
+                //{
+                //    Console.WriteLine("Application error");
+                //}
 
                 staffMenu = false;
             }

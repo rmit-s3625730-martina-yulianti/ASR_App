@@ -11,7 +11,7 @@ namespace ASR_App
         public string RoomName { get; }
         public int RoomSlots { get; set; }  
 
-        // Constrator
+        // Constractor
         public Room(string roomName)
         {
             RoomName = roomName;
@@ -26,7 +26,7 @@ namespace ASR_App
         // Delete schedule and decrease counter to RoomSlots when staff schedule created
         public void DeleteSchedule()
         {
-            if (RoomSlots > 0 && RoomSlots <=2)
+            if (RoomSlots >= 0 && RoomSlots < 2)
             {
                 RoomSlots++;
             }
@@ -36,10 +36,10 @@ namespace ASR_App
             }
         }
 
-        // Add schedule and increase counter to RoomSlots when staff schedule created
+        // Add schedule and increase counter to RoomSlots when staff schedule created (pending)
         public void AddSchedule(string date, string startTime)
         {
-            if (RoomSlots >= 0 && RoomSlots < ROOMSLOTS)
+            if (RoomSlots > 0 && RoomSlots <= ROOMSLOTS)
             {
                 for(int i = 0; i < Schedules.Length; i++)
                 {
@@ -59,10 +59,10 @@ namespace ASR_App
                 int EndInt = int.Parse(hourStr) + 1;
 
                 // Add new schedule to the room
-                Schedules[RoomSlots].Date = date;
-                Schedules[RoomSlots].StartTime = startTime;
-                var endTime = (EndInt < 10) ? "0" + EndInt : EndInt.ToString();
-                Schedules[RoomSlots].EndTime = endTime + ":00";
+                Schedules[ROOMSLOTS-RoomSlots].Date = date;
+                Schedules[ROOMSLOTS-RoomSlots].StartTime = startTime;
+                string endTime = (EndInt < 10) ? "0" + EndInt.ToString() : EndInt.ToString();
+                Schedules[ROOMSLOTS-RoomSlots].EndTime = endTime + ":00";
                 RoomSlots--;
 
             }
@@ -71,5 +71,9 @@ namespace ASR_App
                 throw new SlotException("Maximum 2 slots only.");
             }
         }
+
+        // Check Room Availability
+        public bool RoomAvailability() => (RoomSlots > 0 && RoomSlots <= 2) ? true : false;
+        
     }
 }
