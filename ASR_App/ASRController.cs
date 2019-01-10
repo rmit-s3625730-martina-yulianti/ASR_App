@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
+using ASR_Model;
 using ASR_App;
 
 namespace Controller
@@ -14,8 +15,7 @@ namespace Controller
         private SqlCommand command;
         private SqlDataReader reader;
         private string query;
-        private SqlConnection connection;
-
+        
         public ASRController()
         {
             // Initiate the application including reading the data from database
@@ -53,10 +53,7 @@ namespace Controller
                     {
                         Console.WriteLine("Room table is empty.");
                     }
-
-
                     reader.Close();     
-
 
                     // Initiate the Users in the ASR App
                     query = "Select * from [User]";
@@ -98,7 +95,7 @@ namespace Controller
                                 }
 
                             }
-                
+               
                 }
 
             }
@@ -107,7 +104,6 @@ namespace Controller
                 Console.WriteLine(err.Message);
             }
  
-
         }
 
         // List the rooms that available in the school
@@ -179,7 +175,6 @@ namespace Controller
             Console.WriteLine($"\nRooms available on {date}:\n");
             Console.WriteLine("\tRoom name \t Availability (slots)");
 
-
             foreach (Room room in Rooms)
             {
                 // First check the RoomSlots (max = 2)
@@ -212,8 +207,7 @@ namespace Controller
 
         public void CreateSlot()
         {
-            // create slot
-           
+            // create slot         
             Console.WriteLine("\n--- Create slot ---\n");
             var slotRoom = Util.Console.Ask("Enter room name: ");
             var slotDate = Util.Console.Ask("Enter date for slot (dd-mm-yyyy): ");
@@ -233,24 +227,27 @@ namespace Controller
                             if (room.RoomName.Equals(slotRoom) && room.RoomAvailability())
                             {
                                 // If all valid, add schedule in room and slot
-                                ((Staff)user).AddSlot();
+                                
                                 try
                                 {
+                                    ((Staff)user).AddSlot();
                                     room.AddSchedule(slotDate, slotTime); // fix this later
+                                    Slots.Add(new Slot(staffID, slotRoom, slotDate, slotTime));
+                                    Console.WriteLine("\nSlot created successfully!");
                                 }
                                 catch (SlotException err)
                                 {
                                     Console.WriteLine(err.Message);
                                 }
-                                Slots.Add(new Slot(staffID,slotRoom,slotDate,slotTime));
-                                Console.WriteLine("\nSlot created successfully!");
+                                catch (Exception err)
+                                {
+                                    Console.WriteLine(err.Message);
+                                }
+                                
                                 break;
                             }
                             else { continue; }
                         }
-
-                    
-                   
 
                 }
                 else { continue; }

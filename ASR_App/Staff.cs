@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ASR_App
+namespace ASR_Model
 {
     class Staff : User
     {
@@ -19,7 +19,7 @@ namespace ASR_App
             }
             else
             {
-                throw new SlotException("Unable to create slot.");
+                throw new SlotException("Unable to create slot. Maximum 4 slots");
             }
            
         }

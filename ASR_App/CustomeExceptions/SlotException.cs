@@ -7,9 +7,9 @@ namespace ASR_App
     class SlotException : Exception
     {
         
-        public SlotException(string errorMsg)
-        {
-          
-        }
+        public SlotException() { }
+
+        public SlotException(string msg) : base(msg) { }
+
     }
 }

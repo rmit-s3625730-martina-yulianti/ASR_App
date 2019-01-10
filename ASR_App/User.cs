@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ASR_App
+namespace ASR_Model
 {
     abstract class User
     {
