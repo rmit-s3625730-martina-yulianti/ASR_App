@@ -35,7 +35,7 @@ namespace ASR_App
 
         public override string ToString()
         {
-            return ($"    {RoomName} \t\t {StartTime} \t\t {EndTime} \t\t {StaffID} \t\t {BookingID}");
+            return ($"    {RoomName} \t\t {StartTime} \t\t {EndTime} \t\t {StaffID} \t {BookingID}");
         }
 
 

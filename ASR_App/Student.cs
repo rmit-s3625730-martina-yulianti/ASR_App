@@ -6,8 +6,6 @@ namespace ASR_App
 {
     class Student : User
     {
-
-        public Student() : base() { }
         public Student(string id, string name, string email) : base(id, name, email) { }
 
     }

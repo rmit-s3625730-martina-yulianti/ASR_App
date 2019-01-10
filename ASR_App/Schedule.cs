@@ -10,7 +10,7 @@ namespace ASR_App
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public bool Available { get; set; }
-
+        
         public Schedule()
         {
             Date = "-";
@@ -19,6 +19,7 @@ namespace ASR_App
             Available = true;
         }
 
+       
 
     }
 }

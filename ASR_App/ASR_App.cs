@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Data.SqlClient;
+using Controller;
 
 namespace ASR_App
 {
@@ -9,38 +11,17 @@ namespace ASR_App
     class ASR_App
     {
         
-        List<Room> Rooms = new List<Room>();
-        List<User> Users = new List<User>();
-        List<Slot> Slots = new List<Slot>();
+        ASRController Driver; 
 
         // Constractor
         public ASR_App()
         {
-            // Initiate the rooms in the ASR App
-            // Later this should be read from the ASRdb (table Room)
-            Rooms.Add(new Room("A"));
-            Rooms.Add(new Room("B"));
-            Rooms.Add(new Room("C"));
-            Rooms.Add(new Room("D"));
-
-            // Initiate Users from ASPdb
-            // dummy
-            Users.Add(new Student("s1234567", "John Doe", "s1234567.student.rmit.edu.au"));
-            Users.Add(new Student("s2345678", "Jimmy Kim", "s2345678.student.rmit.edu.au"));
-            Users.Add(new Staff("e12345", "William Smiths", "e12345.rmit.edu.au"));
-            Users.Add(new Staff("e23456", "Annie Lim", "e23456.rmit.edu.au"));
-
-
-            // Initiate Slots from ASPdb 
-
-
+            
+            // Instantiate the ASR_App controller
+            Driver = new ASRController();
+            
         }
 
-        // import all the nescessary files including database
-        private void Imports()
-        {
-
-        }
 
         public void Start()
         {
@@ -58,7 +39,7 @@ namespace ASR_App
             {
                 try
                 {
-                    Console.WriteLine("-------------------------------------------------------------");
+                    Console.WriteLine("\n-------------------------------------------------------------");
                     Console.WriteLine("Welcome to Appointment Scheduling and Reservation System");
                     Console.WriteLine("-------------------------------------------------------------");
                     Console.WriteLine("-------------------------------------------------------------");
@@ -74,10 +55,12 @@ namespace ASR_App
                     switch (mainOpt)
                     {
                         case 1:
-                            ListRooms();
+                            Driver.ListRooms();
+                            MainMenu();
                             break;
                         case 2:
-                            ListSlots();
+                            Driver.ListSlots();
+                            MainMenu();
                             break;
 
                         case 3:
@@ -103,15 +86,16 @@ namespace ASR_App
                     Console.WriteLine(err.Message);
                     MainMenu();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine("Application error");
+                    Console.WriteLine(e.ToString());
                 }
                 mainMenu = false;
             }
 
         }
 
+        /*
         // List the rooms that available in the school
         private void ListRooms()
         {
@@ -126,27 +110,35 @@ namespace ASR_App
             MainMenu();
 
         }
+        */
 
+        /*
         // List the slots that available in the system
         private void ListSlots()
         {
+            int found = 0;
+
             Console.WriteLine("--- List Slots ---");
             var query = Util.Console.Ask("Enter date for slots (dd-mm-yyyy) ");
             Console.WriteLine($"\nSlots on {query}");
             Console.WriteLine("    Room name \t Start time \t End time \t Staff ID \t Bookings");
+            Console.WriteLine("----------------------------------------------------------------------------------------");
             foreach(Slot slot in Slots)
             {
                 if (slot.SlotDate.Equals(query))
                 {
                     Console.WriteLine(slot.ToString());
+                    found++;
                 }
                 else
                 {
                     continue;
                 }
             }
-            Console.WriteLine("--------------------------------------------------------------------------------");
+            Console.WriteLine((found==0)? "    No slots available at this date." : "--------------------------------------------------------------------------------");
         }
+
+        */
 
         // Display menu for staff
         private void StaffMenu()
@@ -172,6 +164,7 @@ namespace ASR_App
                     {
                         case 1:
                             // List all staffs
+                            /*
                             Console.WriteLine("--- List Staffs ---");
                             Console.WriteLine("    IDName \t\t Name                      "+$"\t Email");
                             foreach (User user in Users)
@@ -186,18 +179,21 @@ namespace ASR_App
                                 }
                             }
                             Console.WriteLine("----------------------------------------------------------------------------");
+                            */
+                            Driver.ListStaffs();
                             StaffMenu(); // back to staff menu option
                             break;
                         case 2:
                             // List all room availabilities
+                            /*
                             int found = 0;
                             Console.WriteLine("--- Room Availability ---");
                             var date = Util.Console.Ask("Enter date for room availability (dd-mm-yyyy): ");
 
                             Console.WriteLine($"\nRooms available on {date}:\n");
                             Console.WriteLine("\tRoom name \t Availability (slots)");
-                            
-                           
+
+
                             foreach(Room room in Rooms)
                             {
                                 // First check the RoomSlots (max = 2)
@@ -223,13 +219,16 @@ namespace ASR_App
                                     continue;
                                 }
                             }
-                             
+
                             Console.WriteLine((found == 0) ? "No room available." : "-----------------------------------------------");
+                            */
+                            Driver.ListRoomAvailability();
                             StaffMenu(); // back to staff menu option
                             break;
 
                         case 3:
                             // create slot
+                            /*
                             Console.WriteLine("\n--- Create slot ---\n");
                             var slotRoom = Util.Console.Ask("Enter room name: ");
                             var slotDate = Util.Console.Ask("Enter date for slot (dd-mm-yyyy): ");
@@ -266,8 +265,10 @@ namespace ASR_App
 
                                 }
                                 else { continue; }
-                               
+
                             }
+                            */
+                            Driver.CreateSlot();
                             StaffMenu();
                             break;
 

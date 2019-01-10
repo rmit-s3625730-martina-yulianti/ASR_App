@@ -17,10 +17,11 @@ namespace ASR_App
             RoomName = roomName;
             RoomSlots = ROOMSLOTS;
 
-            for (int i = 0; i < Schedules.Length; i++)
+            for(int i=0; i < RoomSlots; i++)
             {
                 Schedules[i] = new Schedule();
             }
+
         }
 
         // Delete schedule and decrease counter to RoomSlots when staff schedule created
@@ -41,7 +42,7 @@ namespace ASR_App
         {
             if (RoomSlots > 0 && RoomSlots <= ROOMSLOTS)
             {
-                for(int i = 0; i < Schedules.Length; i++)
+                for(int i = 0; i < ROOMSLOTS; i++)
                 {
                     // Check if the schedule already exist in the Schecules
                     if (Schedules[i].Date.Equals(date) && Schedules[i].StartTime.Equals(startTime))
