@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ASR_App;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ASR_Model
 {
-    class Staff : User
+    public class Staff : User
     {
         const int MAXSLOTS = 4;
         public int SlotCounter { get; set; } = 0;

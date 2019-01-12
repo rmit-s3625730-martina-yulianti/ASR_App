@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ASR_App;
 
 namespace ASR_Model
 {
@@ -38,7 +39,7 @@ namespace ASR_Model
         }
 
         // Add schedule and increase counter to RoomSlots when staff schedule created (pending)
-        public void AddSchedule(string date, string startTime)
+        public void AddSchedule(DateTime date, string startTime)
         {
             if (RoomSlots > 0 && RoomSlots <= ROOMSLOTS)
             {

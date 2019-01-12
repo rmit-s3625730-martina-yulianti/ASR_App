@@ -7,13 +7,13 @@ namespace ASR_Model
     class Slot
     {
         public string RoomName { get; set; }
-        public string SlotDate { get; set; }
+        public DateTime SlotDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
         public string StaffID { get; set; }
         public string BookingID { get; set; }
 
-        public Slot(string staffID,string room,string date, string start)
+        public Slot(string staffID,string room,DateTime date, string start)
         {
             StaffID = staffID;
             RoomName = room;

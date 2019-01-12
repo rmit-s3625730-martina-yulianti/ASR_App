@@ -16,9 +16,9 @@ namespace ASR_App
         // Constractor
         public ASR_App()
         {
-            
+
             // Instantiate the ASR_App controller
-            Driver = new ASRController();
+            Driver = ASRController.GetStart;
             
         }
 

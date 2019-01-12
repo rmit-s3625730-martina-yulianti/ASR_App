@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ASR_Model
 {
-    abstract class User
+    public abstract class User
     {
         //protected string userID;
 
