@@ -324,7 +324,6 @@ namespace Controller
                 {
                     System.Console.WriteLine($"\t{room.RoomName} \t\t\t {room.RoomSlots}");
                     found++;
-
                 }
                 else
                 {
@@ -336,6 +335,75 @@ namespace Controller
 
         } // End of ListRoomAvailability() 
 
+        // List all room availabilities
+        public void StaffAvailability()
+        {
+            int found = 0;
+            System.Console.WriteLine("--- Staff Availability ---");
+
+            // Checking date input 
+            var check = false;
+            while (!check)
+            {
+                if (!(DateTime.TryParseExact(Util.Console.Ask("Enter date for staff availability (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                {
+                    System.Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
+                }
+                else  { check = true; }
+            }
+  
+            var staffID = Util.Console.Ask("Enter staff ID: ");
+            // Check whether the staffID is valid or not
+            foreach(Staff staff in TempStaffs)
+            {
+                if(staff.UserID == staffID)
+                {
+                    if (Slots.Count == 0)
+                    {
+                        System.Console.WriteLine($"No staff available on {slotDate}");
+                    }
+                    else
+                    {
+                        foreach (Slot slot in Slots)
+                        {
+                            if (slot.SlotDate == slotDate)
+                            {
+                                TempRooms = slot.GetRooms();
+                            }
+                        }
+                    }
+
+                    System.Console.WriteLine($"\nStaff {staffID} availability on {slotDate}:\n");
+                    System.Console.WriteLine("\tRoom name \t Start time \t End time");
+
+                    // Check the schedule in every room
+                    foreach (Room room in TempRooms)
+                    {
+                        // if the room has schedule
+                        if (room.Schedules.Count > 0)
+                        {
+                            foreach(Schedule sch in room.Schedules)
+                            {
+                                if (sch.StaffID == staffID && sch.BookingID == "-")
+                                {
+                                    System.Console.WriteLine($"\t{room.RoomName} \t\t {sch.StartTime} \t\t {sch.EndTime}");
+                                    found++;
+                                    break;
+                                }
+                            } // End of foreach room.Schedules
+                           
+                        }
+                    }
+
+                    System.Console.WriteLine((found == 0) ? $"Staff id: {staffID} , is not available." : "---------------------------------------------------");
+                    break;
+                }
+            }
+
+            
+
+        } // End of StaffAvailability()
+        
         public void CreateSlot()
         {
             // create slot  
@@ -375,15 +443,29 @@ namespace Controller
                     {
                         if (Slots.Count == 0)
                         {
-                            Slots.Add(new Slot(staffID, slotRoom.ToUpper(), slotDate, slotTime));
+                            try
+                            {
+                                Slots.Add(new Slot(staffID, slotRoom.ToUpper(), slotDate, slotTime));
+                            }
+                            catch (SlotException err)
+                            {
+                                System.Console.WriteLine(err.Message);
+                            }
+                            catch (Exception e)
+                            {
+                                System.Console.WriteLine(e.Message);
+                            }
+                            
                         }
                         else
                         {   // Slot date already exists
+                            var dateNotExist = true;
                             foreach (Slot slot in Slots)
                             {
                                 if (slot.SlotDate == slotDate)
                                 {
                                     // Check whether staff create the same schedule in the other rooms
+                                    dateNotExist = false;
                                     var foundTheSameSch = 0;
                                     foreach (Room room in slot.GetRooms())
                                     {
@@ -423,6 +505,22 @@ namespace Controller
                                 } // End of if(slot.SlotDate == slotDate)
 
                             } // End of foreach slots
+                            if (dateNotExist)
+                            {
+                                try
+                                {
+                                    Slots.Add(new Slot(staffID, slotRoom.ToUpper(), slotDate, slotTime));
+                                }
+                                catch (SlotException err)
+                                {
+                                    System.Console.WriteLine(err.Message);
+                                }
+                                catch (Exception e)
+                                {
+                                    System.Console.WriteLine(e.Message);
+                                }
+                            } // End of if dateNotExist 
+
                         }
                         break;
                     } // End of if staff.UserID == staffID

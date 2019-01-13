@@ -25,11 +25,6 @@ namespace ASR_Model
             RoomName = roomName;
             RoomSlots = ROOMSLOTS;
 
-            //for(int i=0; i < RoomSlots; i++)
-            // {
-            //    Schedules[i] = new Schedule();
-            //}
-
         }
 
         // Delete schedule and decrease counter to RoomSlots when staff schedule created

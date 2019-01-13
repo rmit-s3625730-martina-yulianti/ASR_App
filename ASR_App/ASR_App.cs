@@ -171,7 +171,7 @@ namespace ASR_App
                         StudentMenu(); // back to staff menu option
                         break;
                     case 2:
-                        //Driver.ListRoomAvailability();
+                        Driver.StaffAvailability();
                         StudentMenu(); // back to staff menu option
                         break;
 
