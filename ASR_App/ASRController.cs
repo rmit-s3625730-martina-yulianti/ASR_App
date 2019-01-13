@@ -233,7 +233,7 @@ namespace Controller
         public void ListStaffs()
         {
             System.Console.WriteLine("--- List Staffs ---");
-            System.Console.WriteLine("    ID \t\t Name                      " + $"\t Email");
+            System.Console.WriteLine("    ID \t\t\t Name                  " + $"\t Email");
             foreach (Staff staff in TempStaffs)
             {
                 if (staff.UserID.StartsWith("e"))
@@ -252,7 +252,7 @@ namespace Controller
         public void ListStudents()
         {
             System.Console.WriteLine("--- List Students ---");
-            System.Console.WriteLine("    ID \t\t Name                      " + $"\t Email");
+            System.Console.WriteLine("    ID \t\t\t Name                  " + $"\t Email");
             foreach (Student student in TempStudents)
             {
                 if (student.UserID.StartsWith("s"))
@@ -281,7 +281,6 @@ namespace Controller
                 if (!(DateTime.TryParseExact(Util.Console.Ask("Enter date for room availability (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
                 {
                     System.Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
-
                 }
                 else
                 {
