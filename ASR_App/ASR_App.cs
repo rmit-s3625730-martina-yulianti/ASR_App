@@ -7,11 +7,11 @@ using Controller;
 namespace ASR_App
 {
     /* Main Program of Appointment Scheduling Reservation Application */
-    
+
     class ASR_App
     {
-        
-        ASRController Driver; 
+
+        ASRController Driver;
 
         // Constractor
         public ASR_App()
@@ -19,7 +19,7 @@ namespace ASR_App
 
             // Instantiate the ASR_App controller
             Driver = ASRController.GetStart;
-            
+
         }
 
 
@@ -94,67 +94,109 @@ namespace ASR_App
             }
 
         }
-        
+
         // Display menu for staff
         private void StaffMenu()
         {
             bool staffMenu = true;
-
             while (staffMenu)
             {
-               
-                    Console.WriteLine("\nEntering staff menu");
-                    Console.WriteLine("\n---------------------------------------");
-                    Console.WriteLine("Staff menu:");
-                    Console.WriteLine("\t 1. List staff");
-                    Console.WriteLine("\t 2. Room availability");
-                    Console.WriteLine("\t 3. Create slot");
-                    Console.WriteLine("\t 4. Remove slot");
-                    Console.WriteLine("\t 5. Exit");
-                    Console.WriteLine("-----------------------------");
-                    int staffOpt = Util.Console.AskInt("Enter option: ");
+                Console.WriteLine("\nEntering staff menu");
+                Console.WriteLine("\n---------------------------------------");
+                Console.WriteLine("Staff menu:");
+                Console.WriteLine("\t 1. List staff");
+                Console.WriteLine("\t 2. Room availability");
+                Console.WriteLine("\t 3. Create slot");
+                Console.WriteLine("\t 4. Remove slot");
+                Console.WriteLine("\t 5. Exit");
+                Console.WriteLine("-----------------------------");
+                int staffOpt = Util.Console.AskInt("Enter option: ");
 
-                    switch (staffOpt)
-                    {
-                        case 1:
-                            Driver.ListStaffs();
-                            StaffMenu(); // back to staff menu option
-                            break;
-                        case 2:
-                            Driver.ListRoomAvailability();
-                            StaffMenu(); // back to staff menu option
-                            break;
+                switch (staffOpt)
+                {
+                    case 1:
+                        Driver.ListStaffs();
+                        StaffMenu(); // back to staff menu option
+                        break;
+                    case 2:
+                        Driver.ListRoomAvailability();
+                        StaffMenu(); // back to staff menu option
+                        break;
 
-                        case 3:
-                            Driver.CreateSlot();
-                            StaffMenu();
-                            break;
+                    case 3:
+                        Driver.CreateSlot();
+                        StaffMenu();
+                        break;
 
-                        case 4:
-                            // remove slot
-                            break;
+                    case 4:
+                        // remove slot
+                        break;
 
-                        case 5:
-                            Console.WriteLine("Exit staff menu ..."); // back to main menu
-                            MainMenu();
-                            break;
-                        default:
-                            Console.WriteLine("Choose between 1 - 5, try again");
-                            break;
+                    case 5:
+                        Console.WriteLine("Exit staff menu ..."); // back to main menu
+                        MainMenu();
+                        break;
+                    default:
+                        Console.WriteLine("Choose between 1 - 5, try again");
+                        break;
 
-                    }
+                }
 
                 staffMenu = false;
             }
 
-        }
+        } // End of StaffMenu
 
         // Display menu for student
         private void StudentMenu()
         {
-            Console.WriteLine("Show student's menu"); // dummy function
-        }
+            bool studentMenu = true;
+            while (studentMenu)
+            {
+                Console.WriteLine("\nEntering student menu");
+                Console.WriteLine("\n---------------------------------------");
+                Console.WriteLine("Student menu:");
+                Console.WriteLine("\t 1. List student");
+                Console.WriteLine("\t 2. Staff availability");
+                Console.WriteLine("\t 3. Make booking");
+                Console.WriteLine("\t 4. Cancel booking");
+                Console.WriteLine("\t 5. Exit");
+                Console.WriteLine("-----------------------------");
+                int studentOpt = Util.Console.AskInt("Enter option: ");
 
-     
+                switch (studentOpt)
+                {
+                    case 1:
+                        Driver.ListStudents();
+                        StudentMenu(); // back to staff menu option
+                        break;
+                    case 2:
+                        //Driver.ListRoomAvailability();
+                        StudentMenu(); // back to staff menu option
+                        break;
+
+                    case 3:
+                        //Driver.CreateSlot();
+                        StudentMenu();
+                        break;
+
+                    case 4:
+                        // remove slot
+                        break;
+
+                    case 5:
+                        Console.WriteLine("Exit student menu ..."); // back to main menu
+                        MainMenu();
+                        break;
+                    default:
+                        Console.WriteLine("Choose between 1 - 5, try again");
+                        break;
+
+                }
+
+                studentMenu = false;
+            }
+        } // End of StudentMenu
+
     }
 }

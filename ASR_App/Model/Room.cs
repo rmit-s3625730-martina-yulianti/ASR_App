@@ -5,12 +5,19 @@ using ASR_App;
 
 namespace ASR_Model
 {
-    class Room
+    interface IObserver
+    {
+        void AddSchedule(string staffId, string startTime);
+        void DeleteSchedule();
+    }
+
+    class Room : IObserver
     {
         public const int ROOMSLOTS = 2;    // Maximum slots for each room
-        public Schedule[] Schedules = new Schedule[ROOMSLOTS]; 
+        public List<Schedule> Schedules = new List<Schedule>(); 
         public string RoomName { get; }
         public int RoomSlots { get; set; }  
+
 
         // Constractor
         public Room(string roomName)
@@ -18,10 +25,10 @@ namespace ASR_Model
             RoomName = roomName;
             RoomSlots = ROOMSLOTS;
 
-            for(int i=0; i < RoomSlots; i++)
-            {
-                Schedules[i] = new Schedule();
-            }
+            //for(int i=0; i < RoomSlots; i++)
+            // {
+            //    Schedules[i] = new Schedule();
+            //}
 
         }
 
@@ -31,6 +38,7 @@ namespace ASR_Model
             if (RoomSlots >= 0 && RoomSlots < 2)
             {
                 RoomSlots++;
+                Console.WriteLine("Remove Schedule");
             }
             else
             {
@@ -39,11 +47,40 @@ namespace ASR_Model
         }
 
         // Add schedule and increase counter to RoomSlots when staff schedule created (pending)
-        public void AddSchedule(DateTime date, string startTime)
+        public void AddSchedule(string staffId, string startTime)
         {
             if (RoomSlots > 0 && RoomSlots <= ROOMSLOTS)
             {
-                for(int i = 0; i < ROOMSLOTS; i++)
+                // Check whether the staff already created the same schedule for this room
+                if (Schedules.Count == 0)
+                {
+                    Schedules.Add(new Schedule(staffId, startTime));
+                }
+                else
+                {
+                    bool found = false;
+                    foreach (Schedule sch in Schedules)
+                    {
+                        if(sch.StaffID==staffId && sch.StartTime == startTime)
+                        {
+                            found = true;
+                            throw new SlotException("Slot is already created. Choose other date or time");
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    if(found == false)
+                    {
+                        Schedules.Add(new Schedule(staffId, startTime));
+                    }
+                }
+                RoomSlots--;
+                Console.WriteLine("\nSchedule added!"); // Add schedule confirmation
+
+                /*
+                for (int i = 0; i < ROOMSLOTS; i++)
                 {
                     // Check if the schedule already exist in the Schecules
                     if (Schedules[i].Date.Equals(date) && Schedules[i].StartTime.Equals(startTime))
@@ -66,7 +103,7 @@ namespace ASR_Model
                 string endTime = (EndInt < 10) ? "0" + EndInt.ToString() : EndInt.ToString();
                 Schedules[ROOMSLOTS-RoomSlots].EndTime = endTime + ":00";
                 RoomSlots--;
-
+                */
             }
             else 
             {
@@ -76,6 +113,8 @@ namespace ASR_Model
 
         // Check Room Availability
         public bool RoomAvailability() => (RoomSlots > 0 && RoomSlots <= 2) ? true : false;
+
+        
         
     }
 }

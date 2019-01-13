@@ -32,7 +32,7 @@ namespace Util
                 char c = Char.Parse(System.Console.ReadLine());
                 if ( (c >='A' && c <= 'Z')|| c >= 'a' && c <= 'z')
                 {
-                    return System.Console.ReadLine();
+                    return c.ToString();
                 }else
                     throw new FormatException("Input was not a letter.");
 
