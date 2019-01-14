@@ -22,7 +22,6 @@ namespace ASR_App
 
         }
 
-
         public void Start()
         {
             MainMenu();

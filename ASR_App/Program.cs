@@ -9,7 +9,7 @@ namespace ASR_App
     {
         // Build configuration setting for database connection
         private static IConfigurationRoot Configuration { get; } =
-            new ConfigurationBuilder().SetBasePath("D:\\PG_Material\\Year_2\\Semester1_2019\\WebDevelopment\\Assignment\\WebDev_Assignment1\\ASR_App\\ASR_App").AddJsonFile("appsettings.json",optional: false).Build();
+            new ConfigurationBuilder().AddJsonFile("appsettings.json",optional: false).Build();
 
         public static string ConnectionString { get; } = Configuration["ConnectionString"];
 

@@ -507,6 +507,8 @@ namespace Controller
                             } // End of foreach slots
                             if (dateNotExist)
                             {
+                                Slots.Add(new Slot(staffID, slotRoom.ToUpper(), slotDate, slotTime));
+                                /*
                                 try
                                 {
                                     Slots.Add(new Slot(staffID, slotRoom.ToUpper(), slotDate, slotTime));
@@ -519,6 +521,7 @@ namespace Controller
                                 {
                                     System.Console.WriteLine(e.Message);
                                 }
+                                */
                             } // End of if dateNotExist 
 
                         }
