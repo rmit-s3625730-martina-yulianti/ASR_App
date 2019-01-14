@@ -109,6 +109,7 @@ namespace ASR_Model
         // Check Room Availability
         public bool RoomAvailability() => (RoomSlots > 0 && RoomSlots <= 2) ? true : false;
 
+        public string RoomAvailability(int used) => $"\t{RoomName,-16} {RoomSlots - used,-5}";
         
         
     }

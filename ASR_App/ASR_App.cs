@@ -77,7 +77,6 @@ namespace ASR_App
                         default:
                             Console.WriteLine("Choose between 1 - 5, try again");
                             break;
-
                     }
                 }
                 catch (FormatException err)
@@ -128,7 +127,8 @@ namespace ASR_App
                         break;
 
                     case 4:
-                        // remove slot
+                        Driver.RemoveSlot();
+                        StaffMenu();
                         break;
 
                     case 5:
@@ -175,12 +175,13 @@ namespace ASR_App
                         break;
 
                     case 3:
-                        //Driver.CreateSlot();
+                        Driver.MakeBooking();
                         StudentMenu();
                         break;
 
                     case 4:
-                        // remove slot
+                        Driver.CancelBooking();
+                        StudentMenu();
                         break;
 
                     case 5:
@@ -190,7 +191,6 @@ namespace ASR_App
                     default:
                         Console.WriteLine("Choose between 1 - 5, try again");
                         break;
-
                 }
 
                 studentMenu = false;

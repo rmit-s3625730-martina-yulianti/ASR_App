@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace Util
 {   /* Custome Console class to get input from user.
@@ -9,22 +7,7 @@ namespace Util
     */
     public static class  Console
     {
-        // Create database connection
-        public static SqlConnection CreateConnection(this string connectionString)
-        {
-            return new SqlConnection(connectionString);
-        }
-
-        // Get data from database table
-        public static DataTable GetDataTable(this SqlCommand command)
-        {
-            var table = new DataTable();
-            new SqlDataAdapter(command).Fill(table);
-
-            return table;
-        }
-
-                
+        
         // return char response from user
         public static string AskChar(string question)
         {
@@ -35,14 +18,11 @@ namespace Util
                     return c.ToString();
                 }else
                     throw new FormatException("Input was not a letter.");
-
-
         }
 
         // return char response from user
         public static string Ask(string question)
         {
-
             System.Console.Write(question);
             return System.Console.ReadLine();
 
