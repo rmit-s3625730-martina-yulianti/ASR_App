@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data.SqlClient;
 using Controller;
 
 namespace ASR_App
@@ -16,7 +13,6 @@ namespace ASR_App
         // Constractor
         public ASR_App()
         {
-
             // Instantiate the ASR_App controller
             Driver = ASRController.GetStart;
 

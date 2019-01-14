@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
-using ASR_Model;
 using ASR_App;
+using ASR_Model;
 
 //using System.Data.SqlClient;
 
@@ -46,6 +46,7 @@ namespace Controller
         public ASRController()
         {
             // Initiate the application including reading the data from database
+            
             try
             {
                 //System.Console.WriteLine("Connect to SQL Server.");
@@ -127,6 +128,7 @@ namespace Controller
                             System.Console.WriteLine("Invalid student email");
                             continue;
                         }
+
                     }
                 }
                 System.Console.WriteLine("Staffs list created!\n"); // Delete this if already finish
@@ -161,6 +163,7 @@ namespace Controller
                             System.Console.WriteLine("Invalid staff email");
                             continue;
                         }
+
                     }
                 }
                 System.Console.WriteLine("Users list created!\n"); // Delete this if already finish
@@ -203,7 +206,8 @@ namespace Controller
             System.Console.WriteLine();
 
         } // End of ListRooms()
-       
+
+        
         // List the slots that available in the system
         public void ListSlots()
         {
