@@ -39,14 +39,13 @@ namespace ASR_App
                     Console.WriteLine("\n-------------------------------------------------------------");
                     Console.WriteLine("Welcome to Appointment Scheduling and Reservation System");
                     Console.WriteLine("-------------------------------------------------------------");
-                    Console.WriteLine("-------------------------------------------------------------");
-                    Console.WriteLine("Main Menu");
+                    Console.WriteLine("Main Menu: ");
                     Console.WriteLine("    1. List rooms");
                     Console.WriteLine("    2. List slots");
                     Console.WriteLine("    3. Staff menu");
                     Console.WriteLine("    4. Student menu");
                     Console.WriteLine("    5. Exit");
-                    Console.WriteLine("-----------------------------");
+                    Console.WriteLine("-----------------------------\n");
                     int mainOpt = Utilities.Console.AskInt("Enter option: ");
 
                     switch (mainOpt)
@@ -66,11 +65,11 @@ namespace ASR_App
                             StudentMenu();
                             break;
                         case 5:
-                            Console.WriteLine("Terminating ASR App ...");
+                            Console.WriteLine("\nTerminating ASR App ...");
                             Environment.Exit(0);
                             break;
                         default:
-                            Console.WriteLine("Choose between 1 - 5, try again");
+                            Console.WriteLine("Choose between 1 - 5, try again.\n");
                             break;
                     }
                 }
@@ -101,7 +100,7 @@ namespace ASR_App
                 Console.WriteLine("\t 3. Create slot");
                 Console.WriteLine("\t 4. Remove slot");
                 Console.WriteLine("\t 5. Exit");
-                Console.WriteLine("-----------------------------");
+                Console.WriteLine("-----------------------------\n");
                 int staffOpt = Utilities.Console.AskInt("Enter option: ");
 
                 switch (staffOpt)
@@ -123,11 +122,11 @@ namespace ASR_App
                         StaffMenu();
                         break;
                     case 5:
-                        Console.WriteLine("Exit staff menu ..."); 
+                        Console.WriteLine("\nExit staff menu ..."); 
                         MainMenu();
                         break;
                     default:
-                        Console.WriteLine("Choose between 1 - 5, try again");
+                        Console.WriteLine("Choose between 1 - 5, try again.\n");
                         break;
                 }
                 staffMenu = false;
@@ -149,7 +148,7 @@ namespace ASR_App
                 Console.WriteLine("\t 3. Make booking");
                 Console.WriteLine("\t 4. Cancel booking");
                 Console.WriteLine("\t 5. Exit");
-                Console.WriteLine("-----------------------------");
+                Console.WriteLine("-----------------------------\n");
                 int studentOpt = Utilities.Console.AskInt("Enter option: ");
 
                 switch (studentOpt)
@@ -171,11 +170,11 @@ namespace ASR_App
                         StudentMenu();
                         break;
                     case 5:
-                        Console.WriteLine("Exit student menu ..."); 
+                        Console.WriteLine("\nExit student menu ..."); 
                         MainMenu();
                         break;
                     default:
-                        Console.WriteLine("Choose between 1 - 5, try again");
+                        Console.WriteLine("Choose between 1 - 5, try again\n");
                         break;
                 }
 

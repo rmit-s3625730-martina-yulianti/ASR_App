@@ -59,53 +59,57 @@ namespace Controller
                     }
                 }
 
-                // Check whether student id is valid
-                if(students.Where(x => x.UserID == studentID).Any())
+                // Check if students list not empty
+                if (students.Count != 0)
                 {
-                    if (slots.Count != 0)
+                    // Check whether student id is valid
+                    if (students.Where(x => x.UserID == studentID).Any())
                     {
-                        // Check whether the student already make booking in the same date
-                        if (slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime == slotDate).Any())
+                        if (slots.Count != 0)
                         {
-                            Console.WriteLine("\nStudent can only book 1 slot per day. Choose another day.");
-                        }
-                        else
-                        {
-                            if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                            // Check whether the student already make booking in the same date
+                            if (slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime == slotDate).Any())
                             {
-                                using (var connection = ASRDatabase.ConnectionString.CreateConnection())
-                                {
-                                    connection.Open();
-
-                                    var command = connection.CreateCommand();
-                                    command.CommandText = "update Slot set BookedInStudentID = @StudentID where RoomID = @RoomID AND StartTime = @StartTime";
-                                    command.Parameters.AddWithValue("StudentID", studentID);
-                                    command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
-                                    DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
-                                    command.Parameters.AddWithValue("StartTime", startTime);
-
-                                    command.ExecuteNonQuery();
-                                    success = true;
-                                }
-
-                                Console.WriteLine("\nSlot has been booked successfully.");
+                                Console.WriteLine("\nStudent can only book 1 slot per day. Choose another day.");
                             }
                             else
                             {
-                                Console.WriteLine("\nSlot schedule not exist or already booked. Choose another slot.");
+                                if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                                {
+                                    using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+                                    {
+                                        connection.Open();
+
+                                        var command = connection.CreateCommand();
+                                        command.CommandText = "update Slot set BookedInStudentID = @StudentID where RoomID = @RoomID AND StartTime = @StartTime";
+                                        command.Parameters.AddWithValue("StudentID", studentID);
+                                        command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
+                                        DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
+                                        command.Parameters.AddWithValue("StartTime", startTime);
+
+                                        command.ExecuteNonQuery();
+                                        success = true;
+                                    }
+
+                                    Console.WriteLine("\nSlot has been booked successfully.");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("\nSlot schedule not exist or already booked. Choose another slot.");
+                                }
                             }
-                        }                     
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nNo slot available now. Cannot make booking slot.");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("\nNo slot available now.");
+                        Console.WriteLine("\nInvalid student id.");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("\nInvalid student id.");
-                }
-
+                else { Console.WriteLine("\nNo students list in system database."); }               
             }
             catch(FormatException err)
             {
@@ -156,36 +160,46 @@ namespace Controller
                     }
                 }
 
-                // Check student id is valid or not
-                if (students.Where(x => x.UserID == studentID).Any())
+                // Check if students list not empty
+                if (students.Count != 0)
                 {
-                    if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == studentID).Any())
+                    // Check student id is valid or not
+                    if (students.Where(x => x.UserID == studentID).Any())
                     {
-                        using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+                        // check if slots list is empty
+                        if (slots.Count != 0)
                         {
-                            connection.Open();
+                            if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == studentID).Any())
+                            {
+                                using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+                                {
+                                    connection.Open();
 
-                            var command = connection.CreateCommand();
-                            command.CommandText = "update Slot set BookedInStudentID = null where RoomID=@RoomID AND StartTime = @StartTime";
-                            command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
-                            DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
-                            command.Parameters.AddWithValue("StartTime", startTime);
+                                    var command = connection.CreateCommand();
+                                    command.CommandText = "update Slot set BookedInStudentID = null where RoomID=@RoomID AND StartTime = @StartTime";
+                                    command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
+                                    DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
+                                    command.Parameters.AddWithValue("StartTime", startTime);
 
-                            command.ExecuteNonQuery();
-                            success = true;
+                                    command.ExecuteNonQuery();
+                                    success = true;
+                                }
+
+                                Console.WriteLine("\nBooking slot has been cancelled.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("\nSchedule not found. Check again the room, date and time slot.");
+                            }
                         }
-
-                        Console.WriteLine("\nBooking slot has been cancelled.");
+                        else { Console.WriteLine("\nNo slot available now. Cannot cancel booking slot."); }       
                     }
                     else
                     {
-                        Console.WriteLine("\nSchedule not found. Check again the room, date and time slot.");
+                        Console.WriteLine("\nStudent id is invalid.");
                     }
                 }
-                else
-                {
-                    Console.WriteLine("\nStudent id is invalid.");
-                }
+                else { Console.WriteLine("\nNo students list in system database."); }
             }
             catch (FormatException err)
             {

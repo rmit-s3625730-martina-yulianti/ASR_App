@@ -13,8 +13,9 @@ namespace ASR_App
         {
             try
             {
-                ASR_App driver = new ASR_App();
-                driver.Start();
+                ASR_App ASR_Application = new ASR_App();
+                ASR_Application.Start();
+
             }catch(Exception err)
             {
                 Console.WriteLine(err.ToString());

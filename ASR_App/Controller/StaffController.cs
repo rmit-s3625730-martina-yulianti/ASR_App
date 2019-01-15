@@ -74,55 +74,60 @@ namespace Controller
                     }
                 }
 
-                // Check whether staffId valid in database
-                if (staffs.Where(x => x.UserID == staffID).Any())
+                // If staffs list not empty
+                if (staffs.Count != 0)
                 {
-                    // Check how many slots that staff has created in that date
-                    if(slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID).Count() >= STAFF_SLOTS)
-                    {
-                        Console.WriteLine("\nUnable to create slot. Maximum staff's slot is 4 slots per day, choose another day.");
-                    }
-                    else 
-                    {
-                        // Check how many slots that room has been booked in that date
-                        if (slots.Where(x => x.SlotDatetime == slotDate && x.RoomName == slotRoom).Count() >= ROOM_SLOTS)
+                    // Check whether staffId valid in database
+                    if (staffs.Where(x => x.UserID == staffID).Any())
+                    {                   
+                        // Check how many slots that staff has created in that date
+                        if (slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID).Count() >= STAFF_SLOTS)
                         {
-                            Console.WriteLine("\nUnable to create slot. Maximum room's slot is 2 per day, choose another day.");
+                            Console.WriteLine("\nUnable to create slot. Maximum staff's slot is 4 slots per day, choose another day.");
                         }
                         else
                         {
-                            // Check if the staff has been created the same booking time, but different room
-                            if (slots.Where(x => x.SlotDatetime == slotDate && x.StartTime==slotTime.ToShortTimeString()).Any())
+                            // Check how many slots that room has been booked in that date
+                            if (slots.Where(x => x.SlotDatetime == slotDate && x.RoomName == slotRoom).Count() >= ROOM_SLOTS)
                             {
-                                Console.WriteLine("\nUnable to create slot. Duplicate schedule, choose different time.");
+                                Console.WriteLine("\nUnable to create slot. Maximum room's slot is 2 per day, choose another day.");
                             }
                             else
                             {
-                                // Valid schedule datetime, then execute to database slot
-                                using (var connection = ASRDatabase.ConnectionString.CreateConnection())
-                                {                               
-                                    connection.Open();
-
-                                    var command = connection.CreateCommand();
-                                    command.CommandText = "insert into Slot (RoomID, StartTime,StaffID,BookedInStudentID) values (@RoomID, @StartTime, @StaffID, @BookedInStudentID)";
-                                    command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
-                                    DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
-                                    command.Parameters.AddWithValue("StartTime", startTime);
-                                    command.Parameters.AddWithValue("StaffID", staffID);
-                                    command.Parameters.AddWithValue("BookedInStudentID", DBNull.Value);
-
-                                    command.ExecuteNonQuery();
-                                    success = true;
+                                // Check if the staff has been created the same booking time, but different room
+                                if (slots.Where(x => x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString()).Any())
+                                {
+                                    Console.WriteLine("\nUnable to create slot. Duplicate schedule, choose different time.");
                                 }
-                                Console.WriteLine("\nNew slot has been added to database.");
+                                else
+                                {
+                                    // Valid schedule datetime, then execute to database slot
+                                    using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+                                    {
+                                        connection.Open();
+
+                                        var command = connection.CreateCommand();
+                                        command.CommandText = "insert into Slot (RoomID, StartTime,StaffID,BookedInStudentID) values (@RoomID, @StartTime, @StaffID, @BookedInStudentID)";
+                                        command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
+                                        DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
+                                        command.Parameters.AddWithValue("StartTime", startTime);
+                                        command.Parameters.AddWithValue("StaffID", staffID);
+                                        command.Parameters.AddWithValue("BookedInStudentID", DBNull.Value);
+
+                                        command.ExecuteNonQuery();
+                                        success = true;
+                                    }
+                                    Console.WriteLine("\nNew slot has been added to database.");
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("\nInvalid staff id.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("\nInvalid staff id.");
-                }
+                else { Console.WriteLine("\nNo Staff in the system database now."); }
             }
             catch(FormatException err)
             {
@@ -167,24 +172,37 @@ namespace Controller
                     else {checkTime = true;}
                 }
 
-                if(slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                // Check if slots list is empty. Can't remove slot
+                if (slots.Count == 0)
                 {
-                    using (var connection = ASRDatabase.ConnectionString.CreateConnection())
-                    {
-                        connection.Open();
-
-                        var command = connection.CreateCommand();
-                        command.CommandText = "delete from Slot where RoomID=@RoomID AND StartTime = @StartTime";
-                        command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
-                        DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
-                        command.Parameters.AddWithValue("StartTime", startTime);
-                        
-                        command.ExecuteNonQuery();
-                        success = true;
-                    }
-
-                    Console.WriteLine("\nSlot has been removed from database.");
+                    Console.WriteLine("\nSlots list is empty now. Cannot remove the slot.");
                 }
+                else
+                {
+                    if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                    {
+                        using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+                        {
+                            connection.Open();
+
+                            var command = connection.CreateCommand();
+                            command.CommandText = "delete from Slot where RoomID=@RoomID AND StartTime = @StartTime";
+                            command.Parameters.AddWithValue("RoomID", slotRoom.ToUpper());
+                            DateTime startTime = DateTime.Parse(slotDate.ToShortDateString() + " " + slotTime.ToShortTimeString());
+                            command.Parameters.AddWithValue("StartTime", startTime);
+
+                            command.ExecuteNonQuery();
+                            success = true;
+                        }
+
+                        Console.WriteLine("\nSlot has been removed from database.");
+                    }
+                    else if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == slotRoom).Any())
+                    {
+                        Console.WriteLine("\nSlot booked! Can't be removed.");
+                    }
+                    else { Console.WriteLine("\nSlot is not found or has not been created."); }
+                }      
             }
             catch (FormatException err)
             {

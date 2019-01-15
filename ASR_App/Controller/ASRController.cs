@@ -55,7 +55,12 @@ namespace Controller
             }
             catch(SqlException err)
             {
-                Console.WriteLine(err.Message);
+                if (err.Number == 53)
+                {                  
+                    Console.WriteLine("SORRY, ASR Database is Offline now. The system is using offline mode");
+                    Console.WriteLine("The ASR functionality cannot work properly. Try again later.\n");
+                    Console.WriteLine("********************************************************************\n");
+                }
             }
             catch (Exception err)
             {
@@ -186,8 +191,8 @@ namespace Controller
         // List the rooms that available in the database
         public void ListRooms()
         {
-            Console.WriteLine("------List Room------");
-            Console.WriteLine("      Room Name");
+            Console.WriteLine("\n------List Room------");
+            Console.WriteLine("\n      Room Name");
             if (TempRooms.Count > 0)
             {
                 foreach (Room room in TempRooms)
@@ -204,12 +209,12 @@ namespace Controller
         // List the slots that available in the system
         public void ListSlots()
         {
-            Console.WriteLine("--- List Slots ---");
+            Console.WriteLine("\n--- List Slots ---");
 
             var check = false;
             while (!check)
             {
-                if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for slots (dd-mm-yyyy) "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for slots (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
                 {
                     Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
                 }
@@ -223,7 +228,7 @@ namespace Controller
             else
             {
                 Console.WriteLine($"\nSlots on {slotDate.ToShortDateString()}");
-                Console.WriteLine("    Room name \t Start time \t End time \t Staff ID \t Bookings");
+                Console.WriteLine("\n    Room name \t Start time \t End time \t Staff ID \t Bookings");
                 Console.WriteLine("--------------------------------------------------------------------------------");
 
                 var slotQuery = Slots.Where(x => x.SlotDatetime == slotDate).ToList();
@@ -242,30 +247,44 @@ namespace Controller
         // List all staffs
         public void ListStaffs()
         {
-            Console.WriteLine("--- List Staffs ---");
-            Console.WriteLine("    ID \t\t\t Name                  " + $"\t Email");
-            foreach (Staff staff in TempStaffs)
-                Console.WriteLine(staff.ToString());
-            
-            Console.WriteLine("----------------------------------------------------------------------------");
+            if (TempStaffs.Count == 0)
+            {
+                Console.WriteLine("\nNo Staff available now.");
+            }
+            else
+            {
+                Console.WriteLine("--- List Staffs ---");
+                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
+                foreach (Staff staff in TempStaffs)
+                    Console.WriteLine(staff.ToString());
+
+                Console.WriteLine("----------------------------------------------------------------------------");
+            }
 
         } // End of ListStaffs()
 
         public void ListStudents()
         {
-            Console.WriteLine("--- List Students ---");
-            Console.WriteLine("    ID \t\t\t Name                  " + $"\t Email");
-            foreach (Student student in TempStudents)           
-                Console.WriteLine(student.ToString());
-            
-            Console.WriteLine("----------------------------------------------------------------------------");
+            if (TempStudents.Count == 0)
+            {
+                Console.WriteLine("\nNo Student available now.");
+            }
+            else
+            {
+                Console.WriteLine("--- List Students ---");
+                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
+                foreach (Student student in TempStudents)
+                    Console.WriteLine(student.ToString());
 
+                Console.WriteLine("----------------------------------------------------------------------------");
+            }
+            
         } // End of ListStaffs()
 
         // List all room availabilities
         public void ListRoomAvailability()
         {
-            Console.WriteLine("--- Room Availability ---");
+            Console.WriteLine("\n--- Room Availability ---");
 
             // Checking date input 
             var check = false;
@@ -294,7 +313,7 @@ namespace Controller
         // List all room availabilities
         public void StaffAvailability()
         {
-            Console.WriteLine("--- Staff Availability ---");
+            Console.WriteLine("\n--- Staff Availability ---");
 
             // Checking date input 
             var check = false;
