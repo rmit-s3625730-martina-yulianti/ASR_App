@@ -18,7 +18,6 @@ namespace ASR_Model
         public string RoomName { get; }
         public int RoomSlots { get; set; }  
 
-
         // Constractor
         public Room(string roomName)
         {

@@ -23,8 +23,7 @@ namespace Util
 
             return table;
         }
-
-                
+           
         // return char response from user
         public static string AskChar(string question)
         {
