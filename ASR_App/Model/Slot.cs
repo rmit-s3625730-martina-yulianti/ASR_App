@@ -2,7 +2,10 @@
 
 namespace ASR_Model
 {
-    class Slot
+    /* Slot class is a model class to create container for slot object from Slot table
+     */
+
+    public class Slot
     {
         public string RoomName { get; set; }
         public DateTime SlotDatetime { get; set; }
@@ -24,7 +27,7 @@ namespace ASR_Model
 
         public override string ToString()
         {
-            return $"    {RoomName,-12} {StartTime,-15} {EndTime,-15} {StaffID,-15} {StudentBookingID,-10}";
+            return $"    {RoomName,-12} {StartTime,-15} {EndTime,-15} {StaffID,-15} {StudentBookingID}";
         }
 
     }

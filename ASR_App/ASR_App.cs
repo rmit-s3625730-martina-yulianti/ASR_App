@@ -1,27 +1,30 @@
 ﻿using System;
 using Controller;
+using Console = System.Console;
 
 namespace ASR_App
 {
-    /* Main Program of Appointment Scheduling Reservation Application */
+    /* Main Program of Appointment Scheduling Reservation Application 
+     * ASR_App clas is the view for the ASR application which interact with user directly.
+     * This class does not have any logic rules of the application, it needs ASRController 
+     * as the brain in ASR system.
+     */
 
-    class ASR_App
+    public class ASR_App
     {
-
         ASRController Driver;
 
         // Constractor
         public ASR_App()
         {
-            // Instantiate the ASR_App controller
+            // Instantiate the ASR_App controller to run this application
             Driver = ASRController.GetStart;
-
         }
 
+        // This where the ASR application begins
         public void Start()
         {
             MainMenu();
-
             Console.ReadLine();
         }
 
@@ -29,7 +32,6 @@ namespace ASR_App
         private void MainMenu()
         {
             bool mainMenu = true;
-
             while (mainMenu)
             {
                 try
@@ -45,7 +47,7 @@ namespace ASR_App
                     Console.WriteLine("    4. Student menu");
                     Console.WriteLine("    5. Exit");
                     Console.WriteLine("-----------------------------");
-                    int mainOpt = Util.Console.AskInt("Enter option: ");
+                    int mainOpt = Utilities.Console.AskInt("Enter option: ");
 
                     switch (mainOpt)
                     {
@@ -57,15 +59,12 @@ namespace ASR_App
                             Driver.ListSlots();
                             MainMenu();
                             break;
-
                         case 3:
                             StaffMenu();
                             break;
-
                         case 4:
                             StudentMenu();
                             break;
-
                         case 5:
                             Console.WriteLine("Terminating ASR App ...");
                             Environment.Exit(0);
@@ -86,8 +85,7 @@ namespace ASR_App
                 }
                 mainMenu = false;
             }
-
-        }
+        } // End of MainMenu
 
         // Display menu for staff
         private void StaffMenu()
@@ -104,39 +102,34 @@ namespace ASR_App
                 Console.WriteLine("\t 4. Remove slot");
                 Console.WriteLine("\t 5. Exit");
                 Console.WriteLine("-----------------------------");
-                int staffOpt = Util.Console.AskInt("Enter option: ");
+                int staffOpt = Utilities.Console.AskInt("Enter option: ");
 
                 switch (staffOpt)
                 {
                     case 1:
                         Driver.ListStaffs();
-                        StaffMenu(); // back to staff menu option
+                        StaffMenu(); 
                         break;
                     case 2:
                         Driver.ListRoomAvailability();
-                        StaffMenu(); // back to staff menu option
+                        StaffMenu(); 
                         break;
-
                     case 3:
                         Driver.CreateSlot();
                         StaffMenu();
                         break;
-
                     case 4:
                         Driver.RemoveSlot();
                         StaffMenu();
                         break;
-
                     case 5:
-                        Console.WriteLine("Exit staff menu ..."); // back to main menu
+                        Console.WriteLine("Exit staff menu ..."); 
                         MainMenu();
                         break;
                     default:
                         Console.WriteLine("Choose between 1 - 5, try again");
                         break;
-
                 }
-
                 staffMenu = false;
             }
 
@@ -157,31 +150,28 @@ namespace ASR_App
                 Console.WriteLine("\t 4. Cancel booking");
                 Console.WriteLine("\t 5. Exit");
                 Console.WriteLine("-----------------------------");
-                int studentOpt = Util.Console.AskInt("Enter option: ");
+                int studentOpt = Utilities.Console.AskInt("Enter option: ");
 
                 switch (studentOpt)
                 {
                     case 1:
                         Driver.ListStudents();
-                        StudentMenu(); // back to staff menu option
+                        StudentMenu(); 
                         break;
                     case 2:
                         Driver.StaffAvailability();
-                        StudentMenu(); // back to staff menu option
+                        StudentMenu(); 
                         break;
-
                     case 3:
                         Driver.MakeBooking();
                         StudentMenu();
                         break;
-
                     case 4:
                         Driver.CancelBooking();
                         StudentMenu();
                         break;
-
                     case 5:
-                        Console.WriteLine("Exit student menu ..."); // back to main menu
+                        Console.WriteLine("Exit student menu ..."); 
                         MainMenu();
                         break;
                     default:
@@ -193,5 +183,5 @@ namespace ASR_App
             }
         } // End of StudentMenu
 
-    }
+    } // End of ASR_App class
 }

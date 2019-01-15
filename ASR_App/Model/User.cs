@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ASR_Model
-{
+{   /* Abstract User for create Student and Staff class
+    */
+
     public abstract class User
     {
-        //protected string userID;
-
         public string UserID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }

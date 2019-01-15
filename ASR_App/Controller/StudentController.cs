@@ -2,62 +2,70 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using ASR_App;
+using Utilities;
 using ASR_Model;
+using Console = System.Console;
 
 namespace Controller
 {
-    class StudentController
-    {
+    /* StudentController class is the controller for the student functionalities
+     */ 
 
+    internal class StudentController
+    {
         private DateTime slotDate;
         private DateTime slotTime;
+        private string studentID;
 
         // Student make booking from available slot
-        public Boolean MakeBooking(List<Student> students, List<Slot> slots)
+        public bool MakeBooking(List<Student> students, List<Slot> slots)
         {
             bool success = false;
             Console.WriteLine("\n--- Make booking ---\n");
             var slotRoom = "";
             try
             {
-                slotRoom = Util.Console.AskChar("Enter room name: ");
+                slotRoom = Utilities.Console.AskChar("Enter room name: ");
                 // Checking date input from user   
                 var checkDate = false;
                 while (!checkDate)
                 {
-                    if (!(DateTime.TryParseExact(Util.Console.Ask("Enter date for slot (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                    if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for slot (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
                     {
                         Console.WriteLine("\nDate format incorrect. Try again (dd-mm-yyyy).");
                     }
-                    else
-                    {
-                        checkDate = true;
-                    }
+                    else {checkDate = true;}
                 }
 
                 // Checking time input from user
                 var checkTime = false;
                 while (!checkTime)
                 {
-                    if (!(DateTime.TryParseExact(Util.Console.Ask("Enter time for slot (hh:mm): "), "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotTime)))
+                    if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter time for slot (hh:mm): "), "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotTime)))
                     {
                         Console.WriteLine("\nTime format incorrect. Try again (hh:mm).");
                     }
-                    else
-                    {
-                        checkTime = true;
-                    }
+                    else {checkTime = true;}
                 }
 
-                var studentID = Util.Console.Ask("Enter student ID: ");
+                // Check validation student id from user input
+                var checkStudent = false;
+                while (!checkStudent)
+                {
+                    studentID = Utilities.Console.Ask("Enter student ID: ");
+                    if (StudentValidationInput(studentID))
+                    {
+                        checkStudent = true;
+                    }
+                }
 
                 // Check whether student id is valid
                 if(students.Where(x => x.UserID == studentID).Any())
                 {
                     if (slots.Count != 0)
                     {
-                        if(slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime == slotDate).Any())
+                        // Check whether the student already make booking in the same date
+                        if (slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime == slotDate).Any())
                         {
                             Console.WriteLine("\nStudent can only book 1 slot per day. Choose another day.");
                         }
@@ -103,48 +111,50 @@ namespace Controller
             {
                 Console.WriteLine(err.Message);
             }
-
             return success;
         }
 
         // Student cancel booking
-        public Boolean CancelBooking(List<Student> students, List<Slot> slots)
+        public bool CancelBooking(List<Student> students, List<Slot> slots)
         {
             bool success = false;
             Console.WriteLine("\n--- Cancel booking ---\n");
             var slotRoom = "";
             try
             {
-                slotRoom = Util.Console.AskChar("Enter room name: ");
+                slotRoom = Utilities.Console.AskChar("Enter room name: ");
                 // Checking date input from user   
                 var checkDate = false;
                 while (!checkDate)
                 {
-                    if (!(DateTime.TryParseExact(Util.Console.Ask("Enter date for slot (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                    if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for slot (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
                     {
                         Console.WriteLine("\nDate format incorrect. Try again (dd-mm-yyyy).");
                     }
-                    else
-                    {
-                        checkDate = true;
-                    }
+                    else { checkDate = true;}
                 }
 
                 // Checking time input from user
                 var checkTime = false;
                 while (!checkTime)
                 {
-                    if (!(DateTime.TryParseExact(Util.Console.Ask("Enter time for slot (hh:mm): "), "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotTime)))
+                    if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter time for slot (hh:mm): "), "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotTime)))
                     {
                         Console.WriteLine("\nTime format incorrect. Try again (hh:mm).");
                     }
-                    else
-                    {
-                        checkTime = true;
-                    }
+                    else {checkTime = true;}
                 }
 
-                var studentID = Util.Console.Ask("Enter student ID: ");
+                // Check validation student id from user input
+                var checkStudent = false;
+                while (!checkStudent)
+                {
+                    studentID = Utilities.Console.Ask("Enter student ID: ");
+                    if (StudentValidationInput(studentID))
+                    {
+                        checkStudent = true;
+                    }
+                }
 
                 // Check student id is valid or not
                 if (students.Where(x => x.UserID == studentID).Any())
@@ -176,15 +186,37 @@ namespace Controller
                 {
                     Console.WriteLine("\nStudent id is invalid.");
                 }
-
             }
             catch (FormatException err)
             {
                 Console.WriteLine(err.Message);
             }
-        
-
             return success;
         }
-    }
+
+        // Student validation (start with "s" and followed by 7 numbers)
+        private bool StudentValidationInput(string studentId)
+        {
+            var valid = false;
+            if (studentId.StartsWith("s"))
+            {
+                // remove extra space from user input
+                string StudentId = studentId.Replace(" ", String.Empty);
+                // check if it's followed by 7 numbers
+                if (int.TryParse(StudentId.Substring(1, StudentId.Length - 1), out int stdInt))
+                {
+                    if (StudentId.Substring(1, StudentId.Length - 1).Length == 7)
+                    {
+                        valid = true;
+                    }
+                    else { Console.WriteLine("The numbers'length must be 7.\n"); }
+                }
+                else { Console.WriteLine("Should be followed by 7 numbers.\n"); }
+            }
+            else { Console.WriteLine("Student id should start with 's'.\n"); }
+
+            return valid;
+        } // End of Student validation
+
+    } // End of Student Controller
 }

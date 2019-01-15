@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace ASR_App
+namespace Utilities
 {
+    /* ASRDatabase class is a clas to create database connection to sql server
+     * Reference : Database Connection is using the coding example from Tutorial week 3
+     */
+
     public static class ASRDatabase
     {
         // Build configuration setting for database connection
@@ -29,7 +31,5 @@ namespace ASR_App
             return table;
         }
 
-
-
-    }
+    } // End of ASRDatabase class
 }
