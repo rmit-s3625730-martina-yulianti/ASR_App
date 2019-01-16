@@ -7,12 +7,12 @@ using Utilities;
 using ASR_Model;
 using Console = System.Console;
 
-namespace Controller
+namespace View
 {
-    /* StaffController class is the controller for the staff functionalities
+    /* StaffView class is display information from the staff functionalities
      */
 
-    internal class StaffController
+    internal class StaffView
     {
         private DateTime slotDate;
         private DateTime slotTime;
@@ -21,7 +21,7 @@ namespace Controller
         private const int STAFF_SLOTS = 4;   // A staff can book a maximum of 4 slots per day 
         private List<Staff> Staffs = new List<Staff>();
         
-        public StaffController(List<Staff> staffs)
+        public StaffView(List<Staff> staffs)
         {
             Staffs = staffs;
         }
@@ -266,6 +266,36 @@ namespace Controller
             }
 
         } // End of ListStaffs() // List staff availabilities
+
+        // List all room availabilities
+        public void ListRoomAvailability(List<Room> rooms, List<Slot> slots)
+        {
+            Console.WriteLine("\n--- Room Availability ---");
+
+            // Checking date input 
+            var check = false;
+            while (!check)
+            {
+                if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for room availability (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                {
+                    Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
+                }
+                else { check = true; }
+            }
+
+            Console.WriteLine($"\nRooms available on {slotDate.ToShortDateString()}:\n");
+            Console.WriteLine("\tRoom name \tAvailability (slots)");
+
+            foreach (Room room in rooms)
+            {
+                int countRoom = slots.Where(x => x.SlotDatetime == slotDate && x.RoomName == room.RoomName).Count();
+                Console.WriteLine(room.RoomAvailability(countRoom));
+            }
+
+            Console.WriteLine("----------------------------------------------------------");
+
+        } // End of ListRoomAvailability() 
+
         public void StaffAvailability(List<Slot> Slots)
         {
             Console.WriteLine("\n--- Staff Availability ---");
