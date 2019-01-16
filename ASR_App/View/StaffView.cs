@@ -99,21 +99,21 @@ namespace View
                     if (Staffs.Where(x => x.UserID == staffID).Any())
                     {                   
                         // Check how many slots that staff has created in that date
-                        if (slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID).Count() >= STAFF_SLOTS)
+                        if (slots.Where(x => x.SlotDatetime.Date == slotDate && x.StaffID == staffID).Count() >= STAFF_SLOTS)
                         {
                             Console.WriteLine("\nUnable to create slot. Maximum staff's slot is 4 slots per day, choose another day.");
                         }
                         else
                         {
                             // Check how many slots that room has been booked in that date
-                            if (slots.Where(x => x.SlotDatetime == slotDate && x.RoomName == slotRoom).Count() >= ROOM_SLOTS)
+                            if (slots.Where(x => x.SlotDatetime.Date == slotDate && x.RoomName == slotRoom.ToUpper()).Count() >= ROOM_SLOTS)
                             {
                                 Console.WriteLine("\nUnable to create slot. Maximum room's slot is 2 per day, choose another day.");
                             }
                             else
                             {
                                 // Check if the staff has been created the same booking time, but different room
-                                if (slots.Where(x => x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString()).Any())
+                                if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString()).Any())
                                 {
                                     Console.WriteLine("\nUnable to create slot. Duplicate schedule, choose different time.");
                                 }
@@ -214,7 +214,7 @@ namespace View
                 }
                 else
                 {
-                    if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                    if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
                     {
                         using (var connection = ASRDatabase.ConnectionString.CreateConnection())
                         {
@@ -232,7 +232,7 @@ namespace View
 
                         Console.WriteLine("\nSlot has been removed from database.");
                     }
-                    else if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == slotRoom).Any())
+                    else if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == slotRoom).Any())
                     {
                         Console.WriteLine("\nSlot booked! Can't be removed.");
                     }
@@ -262,7 +262,7 @@ namespace View
                 foreach (Staff staff in Staffs)
                     Console.WriteLine(staff.ToString());
 
-                Console.WriteLine("----------------------------------------------------------------------------");
+                Console.WriteLine("--------------------------------------------------------------------");
             }
 
         } // End of ListStaffs() // List staff availabilities
@@ -288,7 +288,7 @@ namespace View
 
             foreach (Room room in rooms)
             {
-                int countRoom = slots.Where(x => x.SlotDatetime == slotDate && x.RoomName == room.RoomName).Count();
+                int countRoom = slots.Where(x => x.SlotDatetime.Date == slotDate && x.RoomName == room.RoomName).Count();
                 Console.WriteLine(room.RoomAvailability(countRoom));
             }
 
@@ -325,7 +325,7 @@ namespace View
             // Check whether the staffID is valid or not
             if (Staffs.Where(x => x.UserID == staffID).Any())
             {
-                var slotQuery = Slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID && x.StudentBookingID == "-").ToList();
+                var slotQuery = Slots.Where(x => x.SlotDatetime.Date == slotDate && x.StaffID == staffID && x.StudentBookingID == "-").ToList();
 
                 if (slotQuery.Count != 0)
                 {

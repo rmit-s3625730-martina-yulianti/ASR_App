@@ -110,13 +110,13 @@ namespace View
                         if (slots.Count != 0)
                         {
                             // Check whether the student already make booking in the same date
-                            if (slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime == slotDate).Any())
+                            if (slots.Where(x => x.StudentBookingID == studentID && x.SlotDatetime.Date == slotDate).Any())
                             {
                                 Console.WriteLine("\nStudent can only book 1 slot per day. Choose another day.");
                             }
                             else
                             {
-                                if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
+                                if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == "-").Any())
                                 {
                                     using (var connection = ASRDatabase.ConnectionString.CreateConnection())
                                     {
@@ -219,7 +219,7 @@ namespace View
                         // check if slots list is empty
                         if (slots.Count != 0)
                         {
-                            if (slots.Where(x => x.RoomName == slotRoom && x.SlotDatetime == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == studentID).Any())
+                            if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == studentID).Any())
                             {
                                 using (var connection = ASRDatabase.ConnectionString.CreateConnection())
                                 {

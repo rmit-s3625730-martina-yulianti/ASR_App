@@ -106,10 +106,12 @@ namespace Controller
                         break;
                     case 3:
                         StaffManagement.CreateSlot(Data.GetSlots(),Data.GetRooms());
+                        Data.RefreshDatabase();
                         StaffMenu();
                         break;
                     case 4:
                         StaffManagement.RemoveSlot(Data.GetSlots(), Data.GetRooms());
+                        Data.RefreshDatabase();
                         StaffMenu();
                         break;
                     case 5:
@@ -146,10 +148,12 @@ namespace Controller
                         break;
                     case 3:
                         StudentManagement.MakeBooking(Data.GetSlots(),Data.GetRooms());
+                        Data.RefreshDatabase();
                         StudentMenu();
                         break;
                     case 4:
                         StudentManagement.CancelBooking(Data.GetSlots());
+                        Data.RefreshDatabase();
                         StudentMenu();
                         break;
                     case 5:

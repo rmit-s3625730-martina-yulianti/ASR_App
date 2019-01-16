@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.SqlClient;
-using Utilities;
 using ASR_Model;
-using Console = System.Console;
 
 
 namespace Utilities
 {
+    /* Main Program of Appointment Scheduling Reservation Application 
+     * ASR_App clas is the controller for the ASR application.
+     */
     class ASR_DataController
     {
         private List<Room> TempRooms = new List<Room>();
@@ -49,18 +50,18 @@ namespace Utilities
             {
                 if (err.Number == 53)
                 {
-                    Console.WriteLine("SORRY, ASR Database is Offline now. The system is using offline mode");
-                    Console.WriteLine("The ASR functionality cannot work properly. Try again later.");
-                    Console.WriteLine("********************************************************************\n");
+                    System.Console.WriteLine("SORRY, ASR Database is Offline now. The system is using offline mode");
+                    System.Console.WriteLine("The ASR functionality cannot work properly. Try again later.");
+                    System.Console.WriteLine("********************************************************************\n");
                 }
                 else
                 {
-                    Console.WriteLine(err.Message);
+                    System.Console.WriteLine(err.Message);
                 }
             }
             catch (Exception err)
             {
-                Console.WriteLine(err.ToString());
+                System.Console.WriteLine(err.ToString());
             }
         } // End of Constractor
 
@@ -178,7 +179,11 @@ namespace Utilities
         } // End of CreateRooms()
 
         // Refresh the slots list everytime there is new slot inserted of updated
-        public List<Slot> RefreshDatabase() => CreateSlots();
+        public void RefreshDatabase()
+        {
+            TempSlots = CreateSlots();
+        }
+            
         
         // Return Staff List
         public List<Staff> GetStaffs() => TempStaffs;

@@ -21,8 +21,7 @@ namespace ASR_Model
             EndTime = DateTime.Parse(datetime.Hour + 1 + ":00").ToShortTimeString();
             SlotDatetime = datetime.Date;
             StaffID = staffId;
-            StudentBookingID = bookingId;   
-            
+            StudentBookingID = bookingId;              
         }
 
         public override string ToString()
