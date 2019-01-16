@@ -9,11 +9,11 @@ namespace ASR_App
 
     public class Program
     {
-        static void Main()
+        private static void Main()
         {
             try
             {
-                ASR_App ASR_Application = new ASR_App();
+                ASRController ASR_Application = new ASRController();
                 ASR_Application.Start();
                
             }catch(Exception err)

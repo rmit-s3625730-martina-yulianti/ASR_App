@@ -2,25 +2,23 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Data.SqlClient;
 using Utilities;
 using ASR_Model;
 using Console = System.Console;
 
-
-namespace Controller
+namespace View
 {
-    /* StudentController class is the controller for the student functionalities
+    /* StudentView class is the display the result from student input
      */ 
 
-    internal class StudentController 
+    internal class StudentView 
     {
         private DateTime slotDate;
         private DateTime slotTime;
         private string studentID;
         private List<Student> Students = new List<Student>();
 
-        public StudentController(List<Student> students)
+        public StudentView(List<Student> students)
         {
             Students = students;
         }
@@ -259,6 +257,7 @@ namespace Controller
             }
             return success;
         }
+
 
         // Student validation (start with "s" and followed by 7 numbers)
         private bool StudentValidationInput(string studentId)
