@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ASR_Model
 {
@@ -8,5 +9,6 @@ namespace ASR_Model
     public class Student : User
     {   
         public Student(string id, string name, string email) : base(id, name, email) { }
+       
     }
 }

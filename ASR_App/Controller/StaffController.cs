@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Data.SqlClient;
 using Utilities;
 using ASR_Model;
 using Console = System.Console;
@@ -18,16 +19,33 @@ namespace Controller
         private string staffID;
         private const int ROOM_SLOTS = 2;    // Each room can be booked for a maximum of 2 slots per day
         private const int STAFF_SLOTS = 4;   // A staff can book a maximum of 4 slots per day 
-
+        private List<Staff> Staffs = new List<Staff>();
+        
+        public StaffController(List<Staff> staffs)
+        {
+            Staffs = staffs;
+        }
+    
         // Staff create slot 
-        public bool CreateSlot(List<Staff> staffs, List<Slot> slots)
+        public bool CreateSlot(List<Slot> slots,List<Room> rooms)
         {
             var success = false;
             Console.WriteLine("\n--- Create slot ---\n");
             var slotRoom="";
             try
             {
-                slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                // Room validation from user input
+                var checkRoom = false;             
+                while(!checkRoom)
+                {
+                    slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                    if (!rooms.Where(x => x.RoomName == slotRoom.ToUpper()).Any())
+                    {
+                        Console.WriteLine("Room name doesn't exist in database. Try another");
+                    }
+                    else { checkRoom = true; }
+                }
+
                 // Checking date input from user   
                 var checkDate = false;
                 while (!checkDate)
@@ -75,10 +93,10 @@ namespace Controller
                 }
 
                 // If staffs list not empty
-                if (staffs.Count != 0)
+                if (Staffs.Count != 0)
                 {
                     // Check whether staffId valid in database
-                    if (staffs.Where(x => x.UserID == staffID).Any())
+                    if (Staffs.Where(x => x.UserID == staffID).Any())
                     {                   
                         // Check how many slots that staff has created in that date
                         if (slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID).Count() >= STAFF_SLOTS)
@@ -138,7 +156,7 @@ namespace Controller
         } // End of CreateSlot
 
         // Remove the slot
-        public bool RemoveSlot(List<Slot> slots)
+        public bool RemoveSlot(List<Slot> slots, List<Room> rooms)
         {
             bool success = false;
 
@@ -146,7 +164,17 @@ namespace Controller
             var slotRoom = "";
             try
             {
-                slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                // Room validation from user input
+                var checkRoom = false;
+                while (!checkRoom)
+                {
+                    slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                    if (!rooms.Where(x => x.RoomName == slotRoom.ToUpper()).Any())
+                    {
+                        Console.WriteLine("Room name doesn't exist in database. Try another");
+                    }
+                    else { checkRoom = true; }
+                }
                 // Checking date input from user   
                 var checkDate = false;
                 while (!checkDate)
@@ -169,7 +197,14 @@ namespace Controller
                     {
                         Console.WriteLine("\nTime format incorrect. Try again (hh:mm).");
                     }
-                    else {checkTime = true;}
+                    else
+                    {
+                        if (slotTime.Minute != 00)
+                        {
+                            Console.WriteLine("\nBooking time's minute only allowed 00, e.g 10:00");
+                        }
+                        else { checkTime = true; }
+                    }
                 }
 
                 // Check if slots list is empty. Can't remove slot
@@ -213,6 +248,75 @@ namespace Controller
 
         } // End of Remove slot
 
+        // List all staffs
+        public void ListStaffs()
+        {
+            if (Staffs.Count == 0)
+            {
+                Console.WriteLine("\nNo Staff available now.");
+            }
+            else
+            {
+                Console.WriteLine("--- List Staffs ---");
+                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
+                foreach (Staff staff in Staffs)
+                    Console.WriteLine(staff.ToString());
+
+                Console.WriteLine("----------------------------------------------------------------------------");
+            }
+
+        } // End of ListStaffs() // List staff availabilities
+        public void StaffAvailability(List<Slot> Slots)
+        {
+            Console.WriteLine("\n--- Staff Availability ---");
+
+            // Checking date input 
+            var check = false;
+            while (!check)
+            {
+                if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for staff availability (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
+                {
+                    Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
+                }
+                else { check = true; }
+            }
+
+            // Check validation staff from user input
+            var checkStaff = false;
+            while (!checkStaff)
+            {
+                staffID = Utilities.Console.Ask("Enter staff ID: ");
+                if (StaffValidationInput(staffID))
+                {
+                    checkStaff = true;
+                }
+            }
+
+            // Check whether the staffID is valid or not
+            if (Staffs.Where(x => x.UserID == staffID).Any())
+            {
+                var slotQuery = Slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID && x.StudentBookingID == "-").ToList();
+
+                if (slotQuery.Count != 0)
+                {
+                    Console.WriteLine($"\nStaff {staffID} availability on {slotDate}:\n");
+                    Console.WriteLine("\tRoom name \t Start time \t End time");
+                    foreach (Slot slot in slotQuery)
+                        Console.WriteLine($"\t{slot.RoomName,-17} {slot.StartTime,-15} {slot.EndTime}");
+
+                    Console.WriteLine("----------------------------------------------------");
+                }
+                else
+                {
+                    Console.WriteLine($"\nStaff ID: {staffID} is not available at {slotDate.ToShortDateString(),-15:dd/MM/yyyy}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid staff id");
+            }
+        } // End of StaffAvailability()
+
         // Staff validation (start with "e" and followed by 5 numbers)
         private bool StaffValidationInput(string staffId)
         {
@@ -230,7 +334,7 @@ namespace Controller
                     }
                     else { Console.WriteLine("The numbers'length must be 5.\n"); }
                 }
-                else { Console.WriteLine("Should be followed by 5 numbers.\n"); }
+                else { Console.WriteLine("Staff id start with 'e' and followed by 5 numbers.\n"); }
             }
             else { Console.WriteLine("Staff id should start with 'e'.\n"); }
 
@@ -239,3 +343,4 @@ namespace Controller
 
     } // End of class controller
 }
+

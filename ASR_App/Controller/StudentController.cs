@@ -2,30 +2,67 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Data.SqlClient;
 using Utilities;
 using ASR_Model;
 using Console = System.Console;
+
 
 namespace Controller
 {
     /* StudentController class is the controller for the student functionalities
      */ 
 
-    internal class StudentController
+    internal class StudentController 
     {
         private DateTime slotDate;
         private DateTime slotTime;
         private string studentID;
+        private List<Student> Students = new List<Student>();
+
+        public StudentController(List<Student> students)
+        {
+            Students = students;
+        }
+
+        // List all students
+        public void ListStudents()
+        {
+            if (Students.Count == 0)
+            {
+                Console.WriteLine("\nNo Student available now.");
+            }
+            else
+            {
+                Console.WriteLine("--- List Students ---");
+                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
+                foreach (Student student in Students)
+                    Console.WriteLine(student.ToString());
+
+                Console.WriteLine("----------------------------------------------------------------------------");
+            }
+
+        } // End of ListStudent()
 
         // Student make booking from available slot
-        public bool MakeBooking(List<Student> students, List<Slot> slots)
+        public bool MakeBooking(List<Slot> slots, List<Room> rooms)
         {
             bool success = false;
             Console.WriteLine("\n--- Make booking ---\n");
             var slotRoom = "";
             try
             {
-                slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                // Room validation from user input
+                var checkRoom = false;
+                while (!checkRoom)
+                {
+                    slotRoom = Utilities.Console.AskChar("Enter room name: ");
+                    if (!rooms.Where(x => x.RoomName == slotRoom.ToUpper()).Any())
+                    {
+                        Console.WriteLine("Room name doesn't exist in database. Try another");
+                    }
+                    else { checkRoom = true; }
+                }
                 // Checking date input from user   
                 var checkDate = false;
                 while (!checkDate)
@@ -45,7 +82,14 @@ namespace Controller
                     {
                         Console.WriteLine("\nTime format incorrect. Try again (hh:mm).");
                     }
-                    else {checkTime = true;}
+                    else
+                    {
+                        if (slotTime.Minute != 00)
+                        {
+                            Console.WriteLine("\nBooking time's minute only allowed 00, e.g 10:00");
+                        }
+                        else { checkTime = true; }
+                    }
                 }
 
                 // Check validation student id from user input
@@ -60,10 +104,10 @@ namespace Controller
                 }
 
                 // Check if students list not empty
-                if (students.Count != 0)
+                if (Students.Count != 0)
                 {
                     // Check whether student id is valid
-                    if (students.Where(x => x.UserID == studentID).Any())
+                    if (Students.Where(x => x.UserID == studentID).Any())
                     {
                         if (slots.Count != 0)
                         {
@@ -119,7 +163,7 @@ namespace Controller
         }
 
         // Student cancel booking
-        public bool CancelBooking(List<Student> students, List<Slot> slots)
+        public bool CancelBooking(List<Slot> slots)
         {
             bool success = false;
             Console.WriteLine("\n--- Cancel booking ---\n");
@@ -146,7 +190,15 @@ namespace Controller
                     {
                         Console.WriteLine("\nTime format incorrect. Try again (hh:mm).");
                     }
-                    else {checkTime = true;}
+                    else
+                    {
+                        if (slotTime.Minute != 00)
+                        {
+                            Console.WriteLine("The minute must be 00, e.g 10:00 or 13:00");
+                        }
+                        else { checkTime = true; }
+                        
+                    }
                 }
 
                 // Check validation student id from user input
@@ -161,10 +213,10 @@ namespace Controller
                 }
 
                 // Check if students list not empty
-                if (students.Count != 0)
+                if (Students.Count != 0)
                 {
                     // Check student id is valid or not
-                    if (students.Where(x => x.UserID == studentID).Any())
+                    if (Students.Where(x => x.UserID == studentID).Any())
                     {
                         // check if slots list is empty
                         if (slots.Count != 0)

@@ -10,10 +10,11 @@ namespace Utilities
 
     public static class ASRDatabase
     {
-        // Build configuration setting for database connection
+        //Build configuration setting for database connection
         private static IConfigurationRoot Configuration { get; } =
-            new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
+           new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
 
+   
         public static string ConnectionString { get; } = Configuration["ConnectionString"];
 
         // Create database connection

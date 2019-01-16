@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ASR_Model
 {   /* Abstract User for create Student and Staff class
     */
 
-    public abstract class User
+
+    public abstract class User 
     {
         public string UserID { get; set; }
         public string Name { get; set; }
@@ -22,5 +24,6 @@ namespace ASR_Model
         {
             return ($"    {UserID} \t\t {Name}               "+$"\t {Email}");
         }
+
     }
 }

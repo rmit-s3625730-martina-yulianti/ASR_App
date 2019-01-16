@@ -15,10 +15,10 @@ namespace ASR_App
             {
                 ASR_App ASR_Application = new ASR_App();
                 ASR_Application.Start();
-
+               
             }catch(Exception err)
             {
-                Console.WriteLine(err.ToString());
+                Console.WriteLine(err.Message);
             }                
         }
     }

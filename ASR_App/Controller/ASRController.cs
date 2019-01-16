@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Utilities;
 using ASR_Model;
 using Console = System.Console;
@@ -18,13 +20,11 @@ namespace Controller
     {
         private static ASRController instance = null;  // for Singleton pattern
 
-        //private IList<Schedule> Schedules = new List<Schedule>();
         private List<Room> TempRooms = new List<Room>();
-        private List<Staff> TempStaffs = new List<Staff>();
-        private List<Student> TempStudents = new List<Student>();
         private List<Slot> Slots = new List<Slot>();
-        private StaffController StaffManagement = new StaffController();
-        private StudentController StudentManagement = new StudentController();
+       
+        private StaffController StaffManagement;
+        private StudentController StudentManagement;
         private DateTime slotDate;
 
         // Lock the object to create singleton pattern
@@ -49,17 +49,22 @@ namespace Controller
             try
             {
                 TempRooms = CreateRooms();
-                TempStaffs = CreateStaffs();
-                TempStudents = CreateStudents();
                 Slots = CreateSlots();
+                StudentManagement = new StudentController(CreateStudents());
+                StaffManagement = new StaffController(CreateStaffs());
+
             }
             catch(SqlException err)
             {
                 if (err.Number == 53)
                 {                  
                     Console.WriteLine("SORRY, ASR Database is Offline now. The system is using offline mode");
-                    Console.WriteLine("The ASR functionality cannot work properly. Try again later.\n");
+                    Console.WriteLine("The ASR functionality cannot work properly. Try again later.");
                     Console.WriteLine("********************************************************************\n");
+                }
+                else
+                {
+                    Console.WriteLine(err.Message);
                 }
             }
             catch (Exception err)
@@ -73,39 +78,6 @@ namespace Controller
         {
             Slots = CreateSlots();
         }
-
-        // Read the Rooms list that available in database
-        private List<Room> CreateRooms()
-        {
-            List<Room> tempRooms = new List<Room>();
-            using (var connection = ASRDatabase.ConnectionString.CreateConnection())
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = "select * from Room";
-
-                tempRooms = command.GetDataTable().Select().Select(x => new Room((string)x["RoomID"])).ToList();
-                Console.WriteLine("Rooms list created!\n"); // Delete this if already finish
-            }
-            return tempRooms;
-        } // End of CreateRooms()
-
-        // Read the Rooms list that available in database
-        private List<Slot> CreateSlots()
-        {
-            List<Slot> Slots = new List<Slot>();
-            using (var connection = ASRDatabase.ConnectionString.CreateConnection())
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = "select * from Slot";
-
-                Slots = command.GetDataTable().Select().
-                    Select(x => new Slot((string)x["RoomID"],(DateTime)x["StartTime"],(string)x["StaffID"],
-                        (x["BookedInStudentID"] == DBNull.Value)? "-" : (string)x["BookedInStudentID"])).ToList();
-                Console.WriteLine("Slot list created!\n"); // Delete this if already finish
-            }
-            return Slots;
-
-        } // End of CreateRooms()
 
         // Create the Staffs list that available in database
         private List<Student> CreateStudents()
@@ -123,11 +95,11 @@ namespace Controller
                     if ($"{reader["UserID"]}".StartsWith("s"))
                     {
                         // remove extra space from database reading
-                        string studentId = $"{reader["UserID"]}".Replace(" ",String.Empty);
+                        string studentId = $"{reader["UserID"]}".Replace(" ", String.Empty);
                         // check if it's followed by 7 numbers
-                        if(int.TryParse(studentId.Substring(1,studentId.Length-1),out int stdInt))
+                        if (int.TryParse(studentId.Substring(1, studentId.Length - 1), out int stdInt))
                         {
-                            if (studentId.Substring(1,studentId.Length-1).Length == 7)
+                            if (studentId.Substring(1, studentId.Length - 1).Length == 7)
                             {
                                 // validation of student's email address
                                 int IndAt = $"{reader["Email"]}".IndexOf("@");
@@ -136,16 +108,16 @@ namespace Controller
                                 {
                                     // create student object for valid student
                                     tempStudents.Add(new Student($"{reader["UserID"]}", $"{reader["Name"]}", $"{reader["Email"]}"));
-                                }                              
+                                }
                             }
                         }
                     }
                 } // End While
-                Console.WriteLine("Students list created!\n"); // Delete this if already finish
+
             }
             return tempStudents;
 
-        } // End of CreateStaffs()
+        } // End of CreateStudents()
 
         // Create the Students list that available in database
         private List<Staff> CreateStaffs()
@@ -164,8 +136,8 @@ namespace Controller
                     {
                         // remove extra space from database reading
                         string staffId = $"{reader["UserID"]}".Replace(" ", String.Empty);
-                        // check if it's folloewd by 5 numbers
-                        if(int.TryParse(staffId.Substring(1,staffId.Length-1),out int staffInt))
+                        // check if it's followed by 5 numbers
+                        if (int.TryParse(staffId.Substring(1, staffId.Length - 1), out int staffInt))
                         {
                             if (staffId.Substring(1, staffId.Length - 1).Length == 5)
                             {
@@ -182,11 +154,43 @@ namespace Controller
 
                     }
                 }
-                Console.WriteLine("Staffs list created!\n"); // Delete this if already finish
             }
 
             return tempStaffs;
-        } // End of CreateUsers()
+        } // End of CreateStaffs()
+
+        // Read the Rooms list that available in database
+        private List<Room> CreateRooms()
+        {
+            List<Room> tempRooms = new List<Room>();
+            using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = "select * from Room";
+
+                tempRooms = command.GetDataTable().Select().Select(x => new Room((string)x["RoomID"])).ToList();
+                
+            }
+            return tempRooms;
+        } // End of CreateRooms()
+
+        // Read the Rooms list that available in database
+        private List<Slot> CreateSlots()
+        {
+            List<Slot> Slots = new List<Slot>();
+            using (var connection = ASRDatabase.ConnectionString.CreateConnection())
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = "select * from Slot";
+
+                Slots = command.GetDataTable().Select().
+                    Select(x => new Slot((string)x["RoomID"],(DateTime)x["StartTime"],(string)x["StaffID"],
+                        (x["BookedInStudentID"] == DBNull.Value)? "-" : (string)x["BookedInStudentID"])).ToList();
+               
+            }
+            return Slots;
+
+        } // End of CreateRooms()
 
         // List the rooms that available in the database
         public void ListRooms()
@@ -244,43 +248,6 @@ namespace Controller
             }
         } // End of listSlots
 
-        // List all staffs
-        public void ListStaffs()
-        {
-            if (TempStaffs.Count == 0)
-            {
-                Console.WriteLine("\nNo Staff available now.");
-            }
-            else
-            {
-                Console.WriteLine("--- List Staffs ---");
-                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
-                foreach (Staff staff in TempStaffs)
-                    Console.WriteLine(staff.ToString());
-
-                Console.WriteLine("----------------------------------------------------------------------------");
-            }
-
-        } // End of ListStaffs()
-
-        public void ListStudents()
-        {
-            if (TempStudents.Count == 0)
-            {
-                Console.WriteLine("\nNo Student available now.");
-            }
-            else
-            {
-                Console.WriteLine("--- List Students ---");
-                Console.WriteLine("\n    ID \t\t\t Name                  " + $"\t Email");
-                foreach (Student student in TempStudents)
-                    Console.WriteLine(student.ToString());
-
-                Console.WriteLine("----------------------------------------------------------------------------");
-            }
-            
-        } // End of ListStaffs()
-
         // List all room availabilities
         public void ListRoomAvailability()
         {
@@ -310,74 +277,52 @@ namespace Controller
 
         } // End of ListRoomAvailability() 
         
-        // List all room availabilities
+        // List staff availabilities
         public void StaffAvailability()
         {
-            Console.WriteLine("\n--- Staff Availability ---");
+            StaffManagement.StaffAvailability(Slots);
 
-            // Checking date input 
-            var check = false;
-            while (!check)
-            {
-                if (!(DateTime.TryParseExact(Utilities.Console.Ask("Enter date for staff availability (dd-mm-yyyy): "), "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out slotDate)))
-                {
-                    Console.WriteLine("Date format incorrect. Try again (dd-mm-yyyy).");
-                }
-                else  { check = true; }
-            }
-  
-            var staffID = Utilities.Console.Ask("Enter staff ID: ");
-
-            // Check whether the staffID is valid or not
-            if (TempStaffs.Where(x => x.UserID == staffID).Any())
-            {
-                var slotQuery = Slots.Where(x => x.SlotDatetime == slotDate && x.StaffID == staffID && x.StudentBookingID == "-").ToList();
-
-                if (slotQuery.Count != 0)
-                {
-                    Console.WriteLine($"\nStaff {staffID} availability on {slotDate}:\n");
-                    Console.WriteLine("\tRoom name \t Start time \t End time");
-                    foreach(Slot slot in slotQuery)
-                        Console.WriteLine($"\t{slot.RoomName,-17} {slot.StartTime,-15} {slot.EndTime}");
- 
-                    Console.WriteLine("----------------------------------------------------");
-                }
-                else
-                {
-                    Console.WriteLine($"\nStaff ID: {staffID} is not available at {slotDate.ToShortDateString(),-15:dd/MM/yyyy}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid staff id");
-            }           
         } // End of StaffAvailability()
-        
+
+        // List all students
+        public void ListStudents()
+        {
+            StudentManagement.ListStudents();
+
+        } // End of ListStudent()
+
+        // List all staffs
+        public void ListStaffs()
+        {
+            StaffManagement.ListStaffs();
+
+        } // End of ListStaffs()
+
         // Staff create a slot
         public void CreateSlot()
         {
-            if (StaffManagement.CreateSlot(TempStaffs, Slots))
+            if (StaffManagement.CreateSlot(Slots, TempRooms))
                 RefreshDatabase();
         }
 
         // Staff remove a slot
         public void RemoveSlot()
         {
-            if (StaffManagement.RemoveSlot(Slots))
+            if (StaffManagement.RemoveSlot(Slots, TempRooms))
                 RefreshDatabase();
         }
 
         // Student make a booking slot
         public void MakeBooking()
         {
-            if (StudentManagement.MakeBooking(TempStudents, Slots))
+            if (StudentManagement.MakeBooking(Slots, TempRooms))
                 RefreshDatabase();
         }
 
         // Student cancel a booking slot
         public void CancelBooking()
         {
-            if (StudentManagement.CancelBooking(TempStudents, Slots))
+            if (StudentManagement.CancelBooking(Slots))
                 RefreshDatabase();
         }
 
