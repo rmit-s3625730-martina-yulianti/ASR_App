@@ -16,8 +16,7 @@ namespace ASR_Model
             RoomName = roomName;
         }
 
-        public string RoomAvailability(int used) => $"\t{RoomName,-16} {ROOMSLOTS - used,-5}";
-        
+        public string RoomAvailability(int used) => $"\t{RoomName,-16} {ROOMSLOTS - used,-5}";      
         
     }
 }
