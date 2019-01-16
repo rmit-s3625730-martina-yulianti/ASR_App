@@ -15,7 +15,7 @@ namespace ASRMenuFactory
  ------------------------------------------------------------- 
     Main Menu: 
     1. List staff
-    2. List staff
+    2. Room availability
     3. Create slot
     4. Remove slot
     5. Exit

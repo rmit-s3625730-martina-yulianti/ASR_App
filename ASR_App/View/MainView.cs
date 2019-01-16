@@ -48,7 +48,7 @@ namespace View
                 else {check = true;}
             }
 
-            if (Slots.Count==0)
+            if (slots.Count==0)
             {
                 Console.WriteLine("\nThere is no slot that available now.");
             }
@@ -58,7 +58,7 @@ namespace View
                 Console.WriteLine("\n    Room name \t Start time \t End time \t Staff ID \t Bookings");
                 Console.WriteLine("--------------------------------------------------------------------------------");
 
-                var slotQuery = slots.Where(x => x.SlotDatetime == slotDate).ToList();
+                var slotQuery = slots.Where(x => x.SlotDatetime.Date == slotDate).ToList();
                 if (slotQuery.Count==0)
                 {
                     Console.WriteLine($"No slot available at {slotDate.ToShortDateString()}");
