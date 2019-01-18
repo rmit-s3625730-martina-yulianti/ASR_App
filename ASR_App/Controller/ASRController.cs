@@ -69,6 +69,7 @@ namespace Controller
                             break;
                         default:
                             Console.WriteLine("Choose between 1 - 5, try again.\n");
+                            MainMenu();
                             break;
                     }
                 }
@@ -120,6 +121,7 @@ namespace Controller
                         break;
                     default:
                         Console.WriteLine("Choose between 1 - 5, try again.\n");
+                        StaffMenu();
                         break;
                 }
                 staffMenu = false;
@@ -162,6 +164,7 @@ namespace Controller
                         break;
                     default:
                         Console.WriteLine("Choose between 1 - 5, try again\n");
+                        StudentMenu();
                         break;
                 }
 

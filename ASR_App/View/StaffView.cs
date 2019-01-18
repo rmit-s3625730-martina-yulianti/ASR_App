@@ -232,7 +232,7 @@ namespace View
 
                         Console.WriteLine("\nSlot has been removed from database.");
                     }
-                    else if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID == slotRoom).Any())
+                    else if (slots.Where(x => x.RoomName == slotRoom.ToUpper() && x.SlotDatetime.Date == slotDate && x.StartTime == slotTime.ToShortTimeString() && x.StudentBookingID != "-").Any())
                     {
                         Console.WriteLine("\nSlot booked! Can't be removed.");
                     }
