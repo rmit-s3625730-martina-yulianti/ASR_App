@@ -2,7 +2,7 @@
 ASR system is a scheduling system to help student to make booking appointment based on the availability of the staff. The system has different functionality for each user. Staff can list the room availability before they can create a appointment schedule in the system and also remove the schedule if the schedule is not booked by a student. The student can check the availability of the staff on a specific day, when and where they can booked the appointment with them, or cancel the booking. 
 
 ## Screeanshot the ASR main menu
-https://github.com/rmit-s3625730-martina-yulianti/ASR_App/issues/1#issue-456736386
+![image](https://user-images.githubusercontent.com/31295850/59578474-b2af2000-910b-11e9-8c80-d0fb39052898.png)
 
 ## Getting Started
 When ASR application is start, it will create connection to database server (Microsoft Azure server) to get the data before the application creates user (student and staff) object and slot object (if available). If the database server is unavailable when the ASR application run, it will run on offline mode. The menu for student and staff is still available, but cannot perform the functionalities properly, such as cannot create or remove the appointment schedule.  
